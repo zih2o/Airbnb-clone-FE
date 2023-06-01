@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
-import { Box, Button, HStack } from '@chakra-ui/react';
-import { FaAirbnb } from 'react-icons/fa';
+import { Box, Button, HStack, IconButton } from '@chakra-ui/react';
+import { FaAirbnb, FaMoon } from 'react-icons/fa';
 
 export default function Root() {
   return (
@@ -15,6 +15,11 @@ export default function Root() {
           <FaAirbnb />
         </Box>
         <HStack spacing={5}>
+          <IconButton
+            variant={'ghost'}
+            icon={<FaMoon />}
+            aria-label="Toggle dark mode"
+          />
           <Button>Log in</Button>
           <Button colorScheme={'red'}>Sign up</Button>
         </HStack>
