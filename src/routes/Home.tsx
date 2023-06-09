@@ -1,4 +1,4 @@
-import { Box, Grid, Skeleton, SkeletonText } from '@chakra-ui/react';
+import { Box, Grid, HStack, Skeleton, SkeletonText } from '@chakra-ui/react';
 import Room from '../components/Room';
 
 export default function Home() {
@@ -17,9 +17,23 @@ export default function Home() {
       }}
     >
       <Box>
-        <Skeleton rounded={'xl'} height={300} mb={7} />
-        <SkeletonText skeletonHeight={3} w={'70%'} mb={4} />
-        <SkeletonText skeletonHeight={3} w={'30%'} noOfLines={1} />
+        <Skeleton rounded={'xl'} height={300} mb={5} />
+        <HStack justifyContent={'space-between'} mb={3}>
+          <SkeletonText
+            skeletonHeight={5}
+            rounded={'xl'}
+            noOfLines={1}
+            w={'60%'}
+          />
+          <SkeletonText
+            skeletonHeight={5}
+            rounded={'lg'}
+            noOfLines={1}
+            w={'15%'}
+          />
+        </HStack>
+        <SkeletonText skeletonHeight={3} w={'70%'} mb={4} noOfLines={2} />
+        <SkeletonText skeletonHeight={4} w={'30%'} noOfLines={1} />
       </Box>
       <Room />
     </Grid>
