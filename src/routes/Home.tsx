@@ -17,23 +17,14 @@ export default function Home() {
       }}
     >
       <Box>
-        <Skeleton rounded={'xl'} height={300} mb={5} />
+        <Skeleton rounded="lg" height={300} mb={5} />
         <HStack justifyContent={'space-between'} mb={3}>
-          <SkeletonText
-            skeletonHeight={5}
-            rounded={'xl'}
-            noOfLines={1}
-            w={'60%'}
-          />
-          <SkeletonText
-            skeletonHeight={5}
-            rounded={'lg'}
-            noOfLines={1}
-            w={'15%'}
-          />
+          <Skeleton h={4} rounded={'lg'} w={'60%'} />
+          <Skeleton h={4} rounded={'lg'} w={'15%'} />
         </HStack>
-        <SkeletonText skeletonHeight={3} w={'70%'} mb={4} noOfLines={2} />
-        <SkeletonText skeletonHeight={4} w={'30%'} noOfLines={1} />
+        <Skeleton h={3} w={'70%'} rounded={'lg'} mb={1} />
+        <Skeleton h={3} w={'50%'} rounded={'lg'} mb={4} />
+        <Skeleton h={4} w={'30%'} rounded={'lg'} />
       </Box>
       <Room />
     </Grid>
