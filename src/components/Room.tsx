@@ -15,8 +15,7 @@ interface IRoomProps {
   imageUrl: string;
   city: string;
   country: string;
-  rating: string;
-  owner: string;
+  rating: number;
   price: number;
 }
 
@@ -25,7 +24,6 @@ export default function Room({
   city,
   country,
   rating,
-  owner,
   price,
 }: IRoomProps) {
   const gray = useColorModeValue('gray.600', 'gray.300');
@@ -54,7 +52,7 @@ export default function Room({
           </HStack>
         </Grid>
         <Text fontSize={'sm'} color={gray}>
-          호스트: {owner} 님 ・ 호스트 경력 7년
+          호스트: @@@@ 님 ・ 호스트 경력 7년
         </Text>
         <Text fontSize={'sm'} color={gray}>
           11월 18일 ~ 11월 30일
