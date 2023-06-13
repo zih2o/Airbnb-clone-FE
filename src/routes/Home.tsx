@@ -52,13 +52,14 @@ export default function Home() {
           <RoomSkeleton />
         </>
       ) : null}
-      {rooms?.map((room) => (
+      {rooms?.map((room, idx) => (
         <Room
           imageUrl={room.photos[0].file}
           city={room.city}
           country={room.country}
           rating={room.rating}
           price={room.price}
+          key={idx}
         />
       ))}
     </Grid>
