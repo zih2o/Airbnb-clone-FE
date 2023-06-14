@@ -3,6 +3,7 @@ import Room from '../components/Room';
 import { useQuery } from '@tanstack/react-query';
 import { getRooms } from '../api';
 import RoomSkeleton from '../components/RoomSkeleton';
+import { Link } from 'react-router-dom';
 
 interface IPhoto {
   pk: string;
@@ -53,14 +54,16 @@ export default function Home() {
         </>
       ) : null}
       {rooms?.map((room, idx) => (
-        <Room
-          imageUrl={room.photos[0].file}
-          city={room.city}
-          country={room.country}
-          rating={room.rating}
-          price={room.price}
-          key={idx}
-        />
+        <Link to={`rooms/${room.pk}`}>
+          <Room
+            imageUrl={room.photos[0].file}
+            city={room.city}
+            country={room.country}
+            rating={room.rating}
+            price={room.price}
+            key={idx}
+          />
+        </Link>
       ))}
     </Grid>
   );
