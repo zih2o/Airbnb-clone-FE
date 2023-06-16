@@ -10,27 +10,20 @@ import {
 } from '@chakra-ui/react';
 import React from 'react';
 import { FaRegHeart, FaStar } from 'react-icons/fa';
-
-interface IRoomProps {
-  imageUrl: string;
-  city: string;
-  country: string;
-  rating: number;
-  price: number;
-}
+import { IRoomList } from '../type';
 
 export default function Room({
-  imageUrl,
+  photos,
   city,
   country,
   rating,
   price,
-}: IRoomProps) {
+}: IRoomList) {
   const gray = useColorModeValue('gray.600', 'gray.300');
   return (
     <VStack alignItems={'flex-start'}>
       <Box position={'relative'} overflow={'hidden'} rounded={'xl'} mb={3}>
-        <Image minH={300} src={imageUrl} />
+        <Image minH={300} src={photos[0].file} />
         <Button
           variant={'unstyled'}
           position={'absolute'}

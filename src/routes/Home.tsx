@@ -4,26 +4,10 @@ import { useQuery } from '@tanstack/react-query';
 import { getRooms } from '../api';
 import RoomSkeleton from '../components/RoomSkeleton';
 import { Link } from 'react-router-dom';
-
-interface IPhoto {
-  pk: string;
-  file: string;
-  description: string;
-}
-
-interface IRoom {
-  pk: string;
-  name: string;
-  country: string;
-  city: string;
-  price: number;
-  rating: number;
-  is_owner: boolean;
-  photos: IPhoto[];
-}
+import { IRoomList } from '../type';
 
 export default function Home() {
-  const { isLoading, data: rooms } = useQuery<IRoom[]>(['rooms'], getRooms);
+  const { isLoading, data: rooms } = useQuery<IRoomList[]>(['rooms'], getRooms);
   return (
     <Grid
       mt={10}
@@ -54,9 +38,12 @@ export default function Home() {
         </>
       ) : null}
       {rooms?.map((room, idx) => (
-        <Link to={`rooms/${room.pk}`}>
+        <Link to={`rooms/${room.pk}`} key={idx}>
           <Room
-            imageUrl={room.photos[0].file}
+            pk={room.pk}
+            name={room.name}
+            is_owner={room.is_owner}
+            photos={room.photos}
             city={room.city}
             country={room.country}
             rating={room.rating}
