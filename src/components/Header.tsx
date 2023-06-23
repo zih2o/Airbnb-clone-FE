@@ -5,10 +5,15 @@ import {
   HStack,
   IconButton,
   LightMode,
+  Menu,
+  MenuButton,
+  MenuItem,
+  MenuList,
   Stack,
   useColorMode,
   useColorModeValue,
   useDisclosure,
+  useToast,
 } from '@chakra-ui/react';
 import React from 'react';
 import { FaAirbnb, FaMoon, FaSun } from 'react-icons/fa';
@@ -31,9 +36,18 @@ export default function Header() {
   const { toggleColorMode } = useColorMode();
   const logoColor = useColorModeValue('red.500', 'red.200');
   const Icon = useColorModeValue(FaMoon, FaSun);
+  const toast = useToast();
 
   const { isLoggedIn, user } = useUser();
 
+  const onLogOut = () => {
+    toast({
+      title: 'Log out',
+      description: '정상적으로 로그아웃되었습니다.',
+      status: 'success',
+      position: 'bottom-right',
+    });
+  };
   return (
     <Stack
       justifyContent={'space-between'}
@@ -61,7 +75,16 @@ export default function Header() {
           aria-label="Toggle dark mode"
         />
         {isLoggedIn ? (
-          <Avatar name={user?.name} src={user?.avatar} />
+          <Menu>
+            <MenuButton>
+              <Avatar name={user?.name} src={user?.avatar} />
+            </MenuButton>
+            <MenuList>
+              <MenuItem onClick={onLogOut} textColor={'red.400'} as={'b'}>
+                Log out
+              </MenuItem>
+            </MenuList>
+          </Menu>
         ) : (
           <>
             <Button onClick={onLoginOpen}>Log in</Button>
