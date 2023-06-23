@@ -1,7 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { getRoom } from '../api';
+import { getReviews, getRoom } from '../api';
 import {
   Box,
   Grid,
@@ -10,13 +10,17 @@ import {
   Image,
   Skeleton,
 } from '@chakra-ui/react';
-import { IRoomDetail } from '../type';
+import { IReview, IRoomDetail } from '../type';
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
   const { isLoading, data: room } = useQuery<IRoomDetail>(
     ['rooms', roomPk],
     getRoom
+  );
+  const { isLoading: isReviewsLoading, data: reviews } = useQuery<IReview[]>(
+    ['rooms', roomPk, 'reviews'],
+    getReviews
   );
   return (
     <Box mt={10} px={{ base: '10', lg: '48' }}>
