@@ -5,6 +5,7 @@ import { getReviews, getRoom } from '../api';
 import {
   Avatar,
   Box,
+  Container,
   Divider,
   Grid,
   GridItem,
@@ -84,7 +85,7 @@ export default function RoomDetail() {
       </HStack>
       <Divider />
       <Box mt={10}>
-        <Heading fontSize={'2xl'}>
+        <Heading fontSize={'2xl'} mb={0}>
           <Skeleton isLoaded={!isReviewsLoading} w={'30%'}>
             <HStack>
               <FaStar /> <Text>{room?.rating}</Text>
@@ -95,6 +96,36 @@ export default function RoomDetail() {
             </HStack>
           </Skeleton>
         </Heading>
+        <Container mt={10} maxW="container.lg" marginX="none">
+          <Grid gap={10} templateColumns={'1fr 1fr'}>
+            {reviews?.map((review, index) => (
+              <VStack alignItems={'flex-start'} key={index}>
+                <HStack>
+                  <Avatar
+                    name={review.user.name}
+                    src={review.user.avatar}
+                    size="md"
+                  />
+                  <VStack spacing={0} alignItems={'flex-start'}>
+                    <Skeleton isLoaded={!isReviewsLoading}>
+                      <Heading fontSize={'md'}>{review.user.name}</Heading>
+                    </Skeleton>
+
+                    <Skeleton isLoaded={!isReviewsLoading}>
+                      <HStack spacing={1}>
+                        <FaStar size="12px" />
+                        <Text>{review.rating}</Text>
+                      </HStack>
+                    </Skeleton>
+                  </VStack>
+                </HStack>
+                <Skeleton isLoaded={!isReviewsLoading}>
+                  <Text>{review.payload}</Text>
+                </Skeleton>
+              </VStack>
+            ))}
+          </Grid>
+        </Container>
       </Box>
     </Box>
   );
