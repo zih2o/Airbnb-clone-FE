@@ -3,14 +3,20 @@ import React from 'react';
 import { useParams } from 'react-router-dom';
 import { getReviews, getRoom } from '../api';
 import {
+  Avatar,
   Box,
+  Divider,
   Grid,
   GridItem,
+  HStack,
   Heading,
   Image,
   Skeleton,
+  Text,
+  VStack,
 } from '@chakra-ui/react';
 import { IReview, IRoomDetail } from '../type';
+import { FaStar } from 'react-icons/fa';
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -55,6 +61,41 @@ export default function RoomDetail() {
           </GridItem>
         ))}
       </Grid>
+      <HStack width={'40%'} justifyContent={'space-between'} my={10}>
+        <VStack alignItems={'flex-start'}>
+          <Skeleton isLoaded={!isLoading} height={'30px'}>
+            <Heading fontSize={'2xl'}>
+              House hosted by {room?.owner.name}
+            </Heading>
+          </Skeleton>
+          <Skeleton isLoaded={!isLoading} height={'30px'}>
+            <HStack justifyContent={'flex-start'} w="100%">
+              <Text>
+                {room?.toilets} toliet{room?.toilets === 1 ? '' : 's'}
+              </Text>
+              <Text>∙</Text>
+              <Text>
+                {room?.rooms} room{room?.rooms === 1 ? '' : 's'}
+              </Text>
+            </HStack>
+          </Skeleton>
+        </VStack>
+        <Avatar name={room?.owner.name} size={'xl'} src={room?.owner.avatar} />
+      </HStack>
+      <Divider />
+      <Box mt={10}>
+        <Heading fontSize={'2xl'}>
+          <Skeleton isLoaded={!isReviewsLoading} w={'30%'}>
+            <HStack>
+              <FaStar /> <Text>{room?.rating}</Text>
+              <Text>∙</Text>
+              <Text>
+                {reviews?.length} review{reviews?.length === 1 ? '' : 's'}
+              </Text>
+            </HStack>
+          </Skeleton>
+        </Heading>
+      </Box>
     </Box>
   );
 }
