@@ -1,5 +1,6 @@
 import { QueryFunctionContext } from '@tanstack/react-query';
 import axios from 'axios';
+import Cookie from 'js-cookie';
 
 const instance = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/v1/',
@@ -23,3 +24,12 @@ export const getReviews = ({ queryKey }: QueryFunctionContext) => {
 
 export const getMe = () =>
   instance.get('users/me').then((response) => response.data);
+
+export const logOut = () =>
+  instance
+    .post(`users/log-out`, null, {
+      headers: {
+        'X-CSRFToken': Cookie.get('csrftoken') || '',
+      },
+    })
+    .then((response) => response.data);

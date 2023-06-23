@@ -20,6 +20,8 @@ import { FaAirbnb, FaMoon, FaSun } from 'react-icons/fa';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import useUser from '../lib/useUser';
+import { logOut } from '../api';
+import { QueryClient, useQueryClient } from '@tanstack/react-query';
 
 export default function Header() {
   const {
@@ -39,8 +41,11 @@ export default function Header() {
   const toast = useToast();
 
   const { isLoggedIn, user } = useUser();
+  const queryClient = useQueryClient();
 
-  const onLogOut = () => {
+  const onLogOut = async () => {
+    await logOut();
+    queryClient.refetchQueries(['me']);
     toast({
       title: 'Log out',
       description: '정상적으로 로그아웃되었습니다.',
