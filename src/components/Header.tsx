@@ -10,18 +10,23 @@ import {
   MenuItem,
   MenuList,
   Stack,
+  ToastId,
   useColorMode,
   useColorModeValue,
   useDisclosure,
   useToast,
 } from '@chakra-ui/react';
-import React from 'react';
+import React, { useRef } from 'react';
 import { FaAirbnb, FaMoon, FaSun } from 'react-icons/fa';
 import LoginModal from './LoginModal';
 import SignupModal from './SignupModal';
 import useUser from '../lib/useUser';
 import { logOut } from '../api';
-import { QueryClient, useQueryClient } from '@tanstack/react-query';
+import {
+  QueryClient,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
 
 export default function Header() {
   const {
@@ -39,19 +44,35 @@ export default function Header() {
   const logoColor = useColorModeValue('red.500', 'red.200');
   const Icon = useColorModeValue(FaMoon, FaSun);
   const toast = useToast();
+  const toastId = useRef<ToastId>();
 
   const { isLoggedIn, user } = useUser();
   const queryClient = useQueryClient();
 
+  const mutation = useMutation(logOut, {
+    onMutate: () => {
+      toastId.current = toast({
+        title: 'In Progress',
+        description: 'Processing log out...',
+        status: 'loading',
+        position: 'bottom-right',
+      });
+    },
+    onSuccess: () => {
+      queryClient.refetchQueries(['me']);
+      if (toastId.current) {
+        toast.update(toastId.current, {
+          title: 'Log out',
+          description: '또 만나요!',
+          status: 'success',
+          position: 'bottom-right',
+        });
+      }
+    },
+  });
+
   const onLogOut = async () => {
-    await logOut();
-    queryClient.refetchQueries(['me']);
-    toast({
-      title: 'Log out',
-      description: '정상적으로 로그아웃되었습니다.',
-      status: 'success',
-      position: 'bottom-right',
-    });
+    mutation.mutate();
   };
   return (
     <Stack
