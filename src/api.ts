@@ -1,7 +1,7 @@
 import { QueryFunctionContext } from '@tanstack/react-query';
 import axios from 'axios';
 import Cookie from 'js-cookie';
-import { ILoginForm } from './type';
+import { ILoginForm, ISignUpForm } from './type';
 
 const instance = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/v1/',
@@ -66,6 +66,19 @@ export const usernameLogIn = ({ username, password }: ILoginForm) =>
     .post(
       `/users/log-in`,
       { username, password },
+      {
+        headers: {
+          'X-CSRFToken': Cookie.get('csrftoken') || '',
+        },
+      }
+    )
+    .then((response) => response.data);
+
+export const signUp = ({ username, password, name, email }: ISignUpForm) =>
+  instance
+    .post(
+      `/users/`,
+      { username, password, name, email },
       {
         headers: {
           'X-CSRFToken': Cookie.get('csrftoken') || '',
