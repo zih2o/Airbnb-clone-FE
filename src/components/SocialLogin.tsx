@@ -21,7 +21,13 @@ export default function SocialLogin() {
         <Button leftIcon={<FaComment />} colorScheme={'yellow'} w={'100%'}>
           Login with Kakao
         </Button>
-        <Button leftIcon={<FaGithub />} colorScheme={'facebook'} w={'100%'}>
+        <Button
+          as={'a'}
+          href="https://github.com/login/oauth/authorize?client_id=024636271dcbf00c1fde&scope=read:user,user:email"
+          leftIcon={<FaGithub />}
+          colorScheme={'facebook'}
+          w={'100%'}
+        >
           Login with Github
         </Button>
       </VStack>

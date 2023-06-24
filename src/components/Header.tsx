@@ -69,7 +69,7 @@ export default function Header() {
       py={5}
       borderBottomWidth={1}
     >
-      <Box color={logoColor} fontSize={'4xl'}>
+      <Box as={'a'} href={'/'} color={logoColor} fontSize={'4xl'}>
         <FaAirbnb />
       </Box>
       <HStack spacing={5}>
