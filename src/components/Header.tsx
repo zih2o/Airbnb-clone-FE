@@ -27,6 +27,7 @@ import {
   useMutation,
   useQueryClient,
 } from '@tanstack/react-query';
+import { Link } from 'react-router-dom';
 
 export default function Header() {
   const {
@@ -106,6 +107,11 @@ export default function Header() {
               <Avatar name={user?.name} src={user?.avatar} />
             </MenuButton>
             <MenuList>
+              {user?.is_host ? (
+                <Link to="/rooms/upload">
+                  <MenuItem>Upload room</MenuItem>
+                </Link>
+              ) : null}
               <MenuItem onClick={onLogOut} textColor={'red.400'} as={'b'}>
                 Log out
               </MenuItem>

@@ -22,13 +22,23 @@ export interface IRoomOwner {
 }
 
 export interface IAmenity {
+  pk: number;
   name: string;
   description: string;
+  kind: string;
+  image_icon: string;
+}
+
+export interface ICategory {
+  pk: number;
+  name: string;
+  kind: string;
 }
 
 export interface IRoomDetail extends IRoomList {
   created_at: string;
   updated_at: string;
+  category: ICategory;
   rooms: number;
   toilets: number;
   description: string;
@@ -37,12 +47,23 @@ export interface IRoomDetail extends IRoomList {
   kind: string;
   is_owner: boolean;
   is_liked: boolean;
-  category: {
-    name: string;
-    kind: string;
-  };
   owner: IRoomOwner;
   amenities: IAmenity[];
+}
+
+export interface IUploadRoomVariables {
+  name: string;
+  country: string;
+  city: string;
+  price: number;
+  rooms: number;
+  toilets: number;
+  description: string;
+  address: string;
+  pet_friendly: boolean;
+  kind: string;
+  amenities: number[];
+  category: number;
 }
 
 export interface IReview {
