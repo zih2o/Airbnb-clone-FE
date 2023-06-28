@@ -22,8 +22,18 @@ export default function Room({
   const gray = useColorModeValue('gray.600', 'gray.300');
   return (
     <VStack alignItems={'flex-start'}>
-      <Box position={'relative'} overflow={'hidden'} rounded={'xl'} mb={3}>
-        <Image minH={300} src={photos[0].file} />
+      <Box
+        position={'relative'}
+        overflow={'hidden'}
+        rounded={'xl'}
+        w="100%"
+        mb={3}
+      >
+        {photos[0] ? (
+          <Image minH="300" src={photos[0].file} />
+        ) : (
+          <Box minH="300" h="100%" w="100%" p={10} bg="green.400" />
+        )}
         <Button
           variant={'unstyled'}
           position={'absolute'}
