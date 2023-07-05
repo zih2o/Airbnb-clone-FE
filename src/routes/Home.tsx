@@ -14,8 +14,6 @@ export default function Home() {
   const parser = new DOMParser();
   const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
   const svgElement = svgDoc.documentElement;
-
-  console.log(svgElement); // Output: SVG image element
   return (
     <Grid
       mt={10}

@@ -60,8 +60,6 @@ export default function UploadRoom() {
     reset,
   } = useForm<IUploadRoomVariables>();
 
-  console.log(errors);
-
   const toast = useToast();
 
   const mutation = useMutation(uploadRoom, {

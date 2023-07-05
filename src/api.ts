@@ -1,7 +1,13 @@
 import { QueryFunctionContext } from '@tanstack/react-query';
 import axios from 'axios';
 import Cookie from 'js-cookie';
-import { ILoginForm, ISignUpForm, IUploadRoomVariables } from './type';
+import {
+  ICreatePhotoVaribles,
+  ILoginForm,
+  ISignUpForm,
+  IUploadImageVariables,
+  IUploadRoomVariables,
+} from './type';
 
 const instance = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/v1/',
@@ -95,9 +101,46 @@ export const getCategories = () =>
 
 export const uploadRoom = (data: IUploadRoomVariables) =>
   instance
-    .post(`/rooms/`, data, {
+    .post(`rooms/`, data, {
       headers: {
         'X-CSRFToken': Cookie.get('csrftoken') || '',
       },
     })
     .then((response) => response.data);
+
+export const getUploadUrl = () =>
+  instance
+    .post(`medias/photos/get-url`, null, {
+      headers: {
+        'X-CSRFToken': Cookie.get('csrftoken') || '',
+      },
+    })
+    .then((response) => response.data);
+
+export const uploadImage = ({ uploadURL, file }: IUploadImageVariables) => {
+  const form = new FormData();
+  form.append('file', file[0]);
+  return axios
+    .post(uploadURL, form, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    })
+    .then((response) => response.data);
+};
+
+export const createPhoto = ({
+  file,
+  description,
+  roomPk,
+}: ICreatePhotoVaribles) => {
+  return instance.post(
+    `rooms/${roomPk}/photos`,
+    { file, description },
+    {
+      headers: {
+        'X-CSRFToken': Cookie.get('csrftoken') || '',
+      },
+    }
+  );
+};

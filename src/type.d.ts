@@ -66,6 +66,12 @@ export interface IUploadRoomVariables {
   category: number;
 }
 
+export interface IUploadPhotosVariables {
+  file: File;
+  description: string;
+  room: string;
+}
+
 export interface IReview {
   payload: string;
   rating: number;
@@ -105,4 +111,20 @@ export interface ISignUpForm extends ILoginForm {
 
 export interface ISignUpError {
   error: string;
+}
+
+export interface IUploadURLResponse {
+  id: string;
+  uploadURL: string;
+}
+
+export interface IUploadImageVariables {
+  file: FileList;
+  uploadURL: string;
+}
+
+export interface ICreatePhotoVaribles {
+  file: string;
+  description: string;
+  roomPk: string;
 }
