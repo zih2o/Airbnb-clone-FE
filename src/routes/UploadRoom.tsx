@@ -64,6 +64,7 @@ export default function UploadRoom() {
 
   const mutation = useMutation(uploadRoom, {
     onSuccess: (data) => {
+      reset();
       toast({
         title: 'Upload room',
         description: '방이 성공적으로 업로드 되었어요!',
