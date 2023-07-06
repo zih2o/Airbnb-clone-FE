@@ -9,6 +9,7 @@ import {
   IUploadRoomVariables,
   Value,
 } from './type';
+import { formatDate } from './lib/utils';
 
 const instance = axios.create({
   baseURL: 'http://127.0.0.1:8000/api/v1/',
@@ -152,13 +153,15 @@ export const checkBooking = ({
 }: QueryFunctionContext<CheckBookingQueryKey>) => {
   const [_, roomPk, dates] = queryKey;
   if (Array.isArray(dates)) {
-    const [firstDate, sencondDate] = dates;
-    const checkIn = firstDate?.toJSON().split('T')[0];
-    const checkOut = sencondDate?.toJSON().split('T')[0];
-    return instance
-      .get(
-        `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`
-      )
-      .then((response) => response.data);
+    const [firstDate, secondDate] = dates;
+    if (firstDate && secondDate) {
+      const checkIn = formatDate(firstDate);
+      const checkOut = formatDate(secondDate);
+      return instance
+        .get(
+          `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`
+        )
+        .then((response) => response.data);
+    }
   }
 };
