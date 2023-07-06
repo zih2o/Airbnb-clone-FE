@@ -17,6 +17,7 @@ import HostOnlyPage from '../components/HostOnlyPage';
 import { createPhoto, getUploadUrl, uploadImage } from '../api';
 import { useMutation } from '@tanstack/react-query';
 import { IUploadImageVariables } from '../type';
+import { Helmet } from 'react-helmet';
 
 interface IUploadPhotosForm {
   file: FileList;
@@ -68,6 +69,9 @@ export default function UploadPhotos() {
   return (
     <ProtectedPage>
       <HostOnlyPage>
+        <Helmet>
+          <title>Upload Photo</title>
+        </Helmet>
         <Box
           pb={40}
           mt={10}

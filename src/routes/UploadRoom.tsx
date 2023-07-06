@@ -30,6 +30,7 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { getAmenities, getCategories, uploadRoom } from '../api';
 import { IAmenity, ICategory, IUploadRoomVariables } from '../type';
 import { useForm } from 'react-hook-form';
+import { Helmet } from 'react-helmet';
 
 export default function UploadRoom() {
   const AmenityKind = [
@@ -89,6 +90,9 @@ export default function UploadRoom() {
   return (
     <ProtectedPage>
       <HostOnlyPage>
+        <Helmet>
+          <title>Upload Room</title>
+        </Helmet>
         <Box
           pb={40}
           mt={10}

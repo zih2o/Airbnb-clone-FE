@@ -5,6 +5,7 @@ import { getRooms } from '../api';
 import RoomSkeleton from '../components/RoomSkeleton';
 import { Link } from 'react-router-dom';
 import { IRoomList } from '../type';
+import { Helmet } from 'react-helmet';
 
 export default function Home() {
   const { isLoading, data: rooms } = useQuery<IRoomList[]>(['rooms'], getRooms);
@@ -28,6 +29,9 @@ export default function Home() {
         '2xl': 'repeat(5, 1fr)',
       }}
     >
+      <Helmet>
+        <title>Airbnb Clone</title>
+      </Helmet>
       {isLoading ? (
         <>
           <RoomSkeleton />

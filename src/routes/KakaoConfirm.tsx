@@ -3,6 +3,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { kakaoLogIn } from '../api';
 import { Heading, Spinner, Text, VStack, useToast } from '@chakra-ui/react';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { Helmet } from 'react-helmet';
 
 export default function KakaoConfirm() {
   const { search } = useLocation();
@@ -35,6 +36,9 @@ export default function KakaoConfirm() {
   }, []);
   return (
     <VStack justifyContent={'center'} mt={40}>
+      <Helmet>
+        <title>Kakao Login</title>
+      </Helmet>
       <Heading>Processing log in...</Heading>
       <Text>Don't go anywhere.</Text>
       <Spinner size="lg" />

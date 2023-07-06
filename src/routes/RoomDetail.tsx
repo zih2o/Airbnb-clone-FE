@@ -21,6 +21,7 @@ import { IReview, IRoomDetail, Value } from '../type';
 import { FaStar } from 'react-icons/fa';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import { Helmet } from 'react-helmet';
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -43,6 +44,9 @@ export default function RoomDetail() {
   );
   return (
     <Box mt={10} px={{ base: '10', lg: '48' }}>
+      <Helmet>
+        <title>{room ? room.name : 'Loading...'}</title>
+      </Helmet>
       <Skeleton h={10} w={'100%'} isLoaded={!isLoading}>
         <Heading fontSize={'3xl'}>{room?.name}</Heading>
       </Skeleton>
