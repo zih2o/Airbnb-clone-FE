@@ -7,6 +7,7 @@ import {
   ISignUpForm,
   IUploadImageVariables,
   IUploadRoomVariables,
+  Value,
 } from './type';
 
 const instance = axios.create({
@@ -143,4 +144,21 @@ export const createPhoto = ({
       },
     }
   );
+};
+type CheckBookingQueryKey = [string, string?, Value?];
+
+export const checkBooking = ({
+  queryKey,
+}: QueryFunctionContext<CheckBookingQueryKey>) => {
+  const [_, roomPk, dates] = queryKey;
+  if (Array.isArray(dates)) {
+    const [firstDate, sencondDate] = dates;
+    const checkIn = firstDate?.toJSON().split('T')[0];
+    const checkOut = sencondDate?.toJSON().split('T')[0];
+    return instance
+      .get(
+        `rooms/${roomPk}/bookings/check?check_in=${checkIn}&check_out=${checkOut}`
+      )
+      .then((response) => response.data);
+  }
 };

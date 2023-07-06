@@ -128,3 +128,7 @@ export interface ICreatePhotoVaribles {
   description: string;
   roomPk: string;
 }
+
+export type ValuePiece = Date | null;
+
+export type Value = ValuePiece | [ValuePiece, ValuePiece];
