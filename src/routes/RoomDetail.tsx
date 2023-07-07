@@ -1,7 +1,7 @@
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { checkBooking, getReviews, getRoom } from '../api';
+import { checkBooking, createBooking, getReviews, getRoom } from '../api';
 import {
   Avatar,
   Box,
@@ -13,17 +13,28 @@ import {
   HStack,
   Heading,
   Image,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   Skeleton,
+  Stat,
+  StatLabel,
+  StatNumber,
   Text,
   VStack,
+  useDisclosure,
 } from '@chakra-ui/react';
-import { IReview, IRoomDetail, Value } from '../type';
+import { ICreateBookingForm, IReview, IRoomDetail, Value } from '../type';
 import { FaStar } from 'react-icons/fa';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../calendar.css';
 import { Helmet } from 'react-helmet';
-import useUser from '../lib/useUser';
+import { useForm } from 'react-hook-form';
+import { BookingConfirmModal } from '../components/BookingConfirmModal';
+import { formatDate } from '../lib/utils';
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -36,6 +47,13 @@ export default function RoomDetail() {
     getReviews
   );
   const [dates, setDates] = useState<Value>(new Date());
+  const {
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors },
+  } = useForm<ICreateBookingForm>();
+  const { isOpen, onOpen, onClose } = useDisclosure();
   const { data: checkBookingData, isLoading: isCheckingBooking } = useQuery(
     ['check', roomPk, dates],
     checkBooking,
@@ -44,6 +62,7 @@ export default function RoomDetail() {
       enabled: dates !== undefined,
     }
   );
+
   return (
     <Box mt={10} px={{ base: '10', lg: '48' }}>
       <Helmet>
@@ -171,8 +190,50 @@ export default function RoomDetail() {
             selectRange
             formatDay={(locale, date) => date.getDate().toString()}
           />
+          <VStack
+            mt="4"
+            py="4"
+            rounded={'xl'}
+            shadow={'xl'}
+            backgroundColor={'rgba(224, 224, 224, 0.1)'}
+          >
+            <HStack w="100%" h={'14'}>
+              <Stat w="50%" h="100%" ml="4">
+                <StatLabel>체크인</StatLabel>
+                <StatNumber
+                  {...register('check_in', { required: true })}
+                  fontSize={'lg'}
+                  textAlign={'center'}
+                >
+                  {checkBookingData?.check_in}
+                </StatNumber>
+              </Stat>
+              <Divider orientation="vertical" />
+              <Stat w="50%" h="100%" ml="4">
+                <StatLabel>체크아웃</StatLabel>
+                <StatNumber
+                  {...register('check_out', { required: true })}
+                  fontSize={'lg'}
+                  textAlign={'center'}
+                >
+                  {checkBookingData?.check_out}
+                </StatNumber>
+              </Stat>
+            </HStack>
+            <Divider />
+            <Stat w="100%" px="4">
+              <StatLabel mb="2">게스트 인원</StatLabel>
+              <NumberInput defaultValue={1} max={100} min={1}>
+                <NumberInputField {...register('guests')} />
+                <NumberInputStepper>
+                  <NumberIncrementStepper />
+                  <NumberDecrementStepper />
+                </NumberInputStepper>
+              </NumberInput>
+            </Stat>
+          </VStack>
           <Button
-            type="submit"
+            onClick={onOpen}
             isDisabled={!checkBookingData?.ok}
             isLoading={isCheckingBooking}
             mt={5}
@@ -186,6 +247,17 @@ export default function RoomDetail() {
           ) : null}
         </Box>
       </Grid>
+      <BookingConfirmModal
+        data={{
+          guests: watch('guests'),
+          check_in: checkBookingData?.check_in ?? formatDate(new Date()),
+          check_out: checkBookingData?.check_out ?? formatDate(new Date()),
+        }}
+        isModalOpen={isOpen}
+        onModalOpen={onOpen}
+        onModalClose={onClose}
+        room={room!}
+      />
     </Box>
   );
 }

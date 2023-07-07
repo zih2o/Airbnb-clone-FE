@@ -136,3 +136,13 @@ export interface ICreatePhotoVaribles {
 export type ValuePiece = Date | null;
 
 export type Value = ValuePiece | [ValuePiece, ValuePiece];
+
+export interface ICreateBookingForm {
+  guests: number;
+  check_in: Date;
+  check_out: Date;
+}
+export interface ICreateBookingVariables {
+  roomPk: string;
+  bookingData: ICreateBookingForm;
+}

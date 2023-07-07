@@ -2,6 +2,7 @@ import { QueryFunctionContext } from '@tanstack/react-query';
 import axios from 'axios';
 import Cookie from 'js-cookie';
 import {
+  ICreateBookingVariables,
   ICreatePhotoVaribles,
   IEditRoomVariables,
   ILoginForm,
@@ -174,4 +175,15 @@ export const checkBooking = ({
         .then((response) => response.data);
     }
   }
+};
+
+export const createBooking = (data: ICreateBookingVariables) => {
+  const { roomPk, bookingData } = data;
+  return instance
+    .post(`rooms/${roomPk}/bookings`, bookingData, {
+      headers: {
+        'X-CSRFToken': Cookie.get('csrftoken') || '',
+      },
+    })
+    .then((response) => response.data);
 };
