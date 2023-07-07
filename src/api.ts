@@ -3,6 +3,7 @@ import axios from 'axios';
 import Cookie from 'js-cookie';
 import {
   ICreatePhotoVaribles,
+  IEditRoomVariables,
   ILoginForm,
   ISignUpForm,
   IUploadImageVariables,
@@ -22,6 +23,30 @@ export const getRooms = () =>
 export const getRoom = ({ queryKey }: QueryFunctionContext) => {
   const [_, roomPk] = queryKey;
   return instance.get(`rooms/${roomPk}/`).then((response) => response.data);
+};
+export const getAmenities = () =>
+  instance.get('rooms/amenities').then((response) => response.data);
+
+export const getCategories = () =>
+  instance.get('categories').then((response) => response.data);
+
+export const uploadRoom = (data: IUploadRoomVariables) =>
+  instance
+    .post(`rooms/`, data, {
+      headers: {
+        'X-CSRFToken': Cookie.get('csrftoken') || '',
+      },
+    })
+    .then((response) => response.data);
+export const editRoom = (data: IEditRoomVariables) => {
+  const { roomPk, newRoomData } = data;
+  return instance
+    .put(`rooms/${roomPk}/`, newRoomData, {
+      headers: {
+        'X-CSRFToken': Cookie.get('csrftoken') || '',
+      },
+    })
+    .then((response) => response.data);
 };
 
 export const getReviews = ({ queryKey }: QueryFunctionContext) => {
@@ -93,21 +118,6 @@ export const signUp = ({ username, password, name, email }: ISignUpForm) =>
         },
       }
     )
-    .then((response) => response.data);
-
-export const getAmenities = () =>
-  instance.get('rooms/amenities').then((response) => response.data);
-
-export const getCategories = () =>
-  instance.get('categories').then((response) => response.data);
-
-export const uploadRoom = (data: IUploadRoomVariables) =>
-  instance
-    .post(`rooms/`, data, {
-      headers: {
-        'X-CSRFToken': Cookie.get('csrftoken') || '',
-      },
-    })
     .then((response) => response.data);
 
 export const getUploadUrl = () =>

@@ -7,14 +7,14 @@ interface IProtectedPageProps {
 }
 
 export default function ProtectedPage({ children }: IProtectedPageProps) {
-  const { isLoggedIn, userLoading } = useUser();
+  const { isLoggedIn, isUserLoading } = useUser();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!userLoading) {
+    if (!isUserLoading) {
       if (!isLoggedIn) {
         navigate('/');
       }
     }
-  }, [isLoggedIn, userLoading, navigate]);
+  }, [isLoggedIn, isUserLoading, navigate]);
   return <>{children}</>;
 }

@@ -7,14 +7,14 @@ interface IHostOnlyPageProps {
 }
 
 export default function HostOnlyPage({ children }: IHostOnlyPageProps) {
-  const { user, userLoading } = useUser();
+  const { user, isUserLoading } = useUser();
   const navigate = useNavigate();
   useEffect(() => {
-    if (!userLoading) {
+    if (!isUserLoading) {
       if (!user?.is_host) {
         navigate('/');
       }
     }
-  }, [user, userLoading, navigate]);
+  }, [user, isUserLoading, navigate]);
   return <>{children}</>;
 }

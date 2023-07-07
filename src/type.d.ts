@@ -65,6 +65,10 @@ export interface IUploadRoomVariables {
   amenities: number[];
   category: number;
 }
+export interface IEditRoomVariables {
+  newRoomData: IUploadRoomVariables;
+  roomPk: string;
+}
 
 export interface IUploadPhotosVariables {
   file: File;

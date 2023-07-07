@@ -7,7 +7,7 @@ export default function useUser() {
     retry: false,
   });
   return {
-    userLoading: isLoading,
+    isUserLoading: isLoading,
     user: data,
     isLoggedIn: !isError,
   };

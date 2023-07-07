@@ -1,4 +1,10 @@
 import React from 'react';
+import ProtectedPage from '../components/ProtectedPage';
+import HostOnlyPage from '../components/HostOnlyPage';
+import { useParams } from 'react-router-dom';
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { editRoom, getAmenities, getCategories, getRoom } from '../api';
+import { Helmet } from 'react-helmet';
 import {
   Accordion,
   AccordionButton,
@@ -8,6 +14,7 @@ import {
   Box,
   Button,
   Checkbox,
+  CloseButton,
   Container,
   FormControl,
   FormHelperText,
@@ -15,6 +22,7 @@ import {
   Grid,
   HStack,
   Heading,
+  Image,
   Input,
   InputGroup,
   InputLeftAddon,
@@ -23,47 +31,38 @@ import {
   VStack,
   useToast,
 } from '@chakra-ui/react';
-import { FaBed, FaMoneyBill, FaToilet } from 'react-icons/fa';
-import ProtectedPage from '../components/ProtectedPage';
-import HostOnlyPage from '../components/HostOnlyPage';
-import { useMutation, useQuery } from '@tanstack/react-query';
-import { getAmenities, getCategories, uploadRoom } from '../api';
-import { IAmenity, ICategory, IUploadRoomVariables } from '../type';
 import { useForm } from 'react-hook-form';
-import { Helmet } from 'react-helmet';
+import { FaBed, FaMoneyBill, FaToilet } from 'react-icons/fa';
+import { IAmenity, ICategory, IRoomPhoto, IUploadRoomVariables } from '../type';
 import { AmenityKind } from '../lib/amenityKind';
 
-export default function UploadRoom() {
+export default function EditRoom() {
+  const { roomPk } = useParams();
+  const { data: room } = useQuery(['rooms', roomPk], getRoom);
   const { data: amenities, isLoading: isAmenitiesLoading } = useQuery<
     IAmenity[]
   >(['amenities'], getAmenities);
   const { data: categories, isLoading: isCategoriesLoading } = useQuery<
     ICategory[]
   >(['categories'], getCategories);
-
   const {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
-    reset,
-  } = useForm<IUploadRoomVariables>();
-
+  } = useForm<IUploadRoomVariables>({ defaultValues: room });
   const toast = useToast();
-
-  const mutation = useMutation(uploadRoom, {
+  const mutation = useMutation(editRoom, {
     onSuccess: (data) => {
-      reset();
       toast({
-        title: 'Upload room',
-        description: '방이 성공적으로 업로드 되었어요!',
+        title: 'Edit room',
+        description: '방이 성공적으로 수정 되었어요!',
         status: 'success',
         position: 'bottom-right',
       });
     },
     onError: () => {
       toast({
-        title: 'Upload room',
+        title: 'Edit room',
         description: '문제가 생겼어요...',
         status: 'error',
         position: 'bottom-right',
@@ -72,14 +71,16 @@ export default function UploadRoom() {
   });
 
   const onSubmit = (data: IUploadRoomVariables) => {
-    mutation.mutate(data);
+    if (roomPk) {
+      mutation.mutate({ newRoomData: data, roomPk });
+    }
   };
 
   return (
     <ProtectedPage>
       <HostOnlyPage>
         <Helmet>
-          <title>Upload Room</title>
+          <title>Edit Room</title>
         </Helmet>
         <Box
           pb={40}
@@ -90,7 +91,12 @@ export default function UploadRoom() {
           }}
         >
           <Container>
-            <Heading textAlign={'center'}>Upload Room</Heading>
+            <Heading textAlign={'center'}>Edit Room</Heading>
+            <HStack>
+              {room?.photos.map((photo: IRoomPhoto) => (
+                <Image src={photo.file} />
+              ))}
+            </HStack>
             <VStack
               as="form"
               onSubmit={handleSubmit(onSubmit)}
@@ -255,7 +261,7 @@ export default function UploadRoom() {
                 size="lg"
                 w="100%"
               >
-                Upload Room
+                Edit Room
               </Button>
             </VStack>
           </Container>

@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { checkBooking, getReviews, getRoom } from '../api';
 import {
   Avatar,
@@ -23,6 +23,7 @@ import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../calendar.css';
 import { Helmet } from 'react-helmet';
+import useUser from '../lib/useUser';
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -49,7 +50,14 @@ export default function RoomDetail() {
         <title>{room ? room.name : 'Loading...'}</title>
       </Helmet>
       <Skeleton h={10} w={'100%'} isLoaded={!isLoading}>
-        <Heading fontSize={'3xl'}>{room?.name}</Heading>
+        <HStack>
+          <Heading fontSize={'3xl'}>{room?.name}</Heading>
+          {room?.is_owner ? (
+            <Link to={`edit`}>
+              <Button colorScheme={'red'}>Edit</Button>
+            </Link>
+          ) : null}
+        </HStack>
       </Skeleton>
       <Grid
         mt={8}
@@ -165,7 +173,7 @@ export default function RoomDetail() {
           />
           <Button
             type="submit"
-            disabled={!checkBookingData?.ok || !!dates}
+            isDisabled={!checkBookingData?.ok}
             isLoading={isCheckingBooking}
             mt={5}
             w="100%"
