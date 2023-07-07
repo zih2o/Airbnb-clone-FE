@@ -21,6 +21,7 @@ import { IReview, IRoomDetail, Value } from '../type';
 import { FaStar } from 'react-icons/fa';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
+import '../calendar.css';
 import { Helmet } from 'react-helmet';
 
 export default function RoomDetail() {
@@ -160,8 +161,10 @@ export default function RoomDetail() {
             minDate={new Date()}
             maxDate={new Date(Date.now() + 60 * 60 * 24 * 7 * 4 * 12 * 1000)}
             selectRange
+            formatDay={(locale, date) => date.getDate().toString()}
           />
           <Button
+            type="submit"
             disabled={!checkBookingData?.ok || !!dates}
             isLoading={isCheckingBooking}
             mt={5}
