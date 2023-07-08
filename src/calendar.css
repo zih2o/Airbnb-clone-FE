@@ -1,6 +1,6 @@
 .react-calendar {
   width: 100%;
-  background: rgba(224, 224, 224, 0.1);
+  background: rgba(224, 224, 224, 0.2);
   border: none;
   box-shadow: var(--chakra-shadows-xl);
   padding: var(--chakra-sizes-5);

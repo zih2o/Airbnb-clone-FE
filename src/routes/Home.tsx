@@ -32,36 +32,25 @@ export default function Home() {
       <Helmet>
         <title>Airbnb Clone</title>
       </Helmet>
-      {isLoading ? (
-        <>
+      {rooms?.map((room, idx) =>
+        isLoading ? (
           <RoomSkeleton />
-          <RoomSkeleton />
-          <RoomSkeleton />
-          <RoomSkeleton />
-          <RoomSkeleton />
-          <RoomSkeleton />
-          <RoomSkeleton />
-          <RoomSkeleton />
-          <RoomSkeleton />
-          <RoomSkeleton />
-          <RoomSkeleton />
-        </>
-      ) : null}
-      {rooms?.map((room, idx) => (
-        <Link to={`rooms/${room.pk}`} key={idx}>
-          <Room
-            pk={room.pk}
-            name={room.name}
-            is_owner={room.is_owner}
-            photos={room.photos}
-            city={room.city}
-            country={room.country}
-            rating={room.rating}
-            price={room.price}
-            key={idx}
-          />
-        </Link>
-      ))}
+        ) : (
+          <Link to={`rooms/${room.pk}`} key={idx}>
+            <Room
+              pk={room.pk}
+              name={room.name}
+              is_owner={room.is_owner}
+              photos={room.photos}
+              city={room.city}
+              country={room.country}
+              rating={room.rating}
+              price={room.price}
+              key={idx}
+            />
+          </Link>
+        )
+      )}
     </Grid>
   );
 }

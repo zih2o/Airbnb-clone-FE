@@ -13,6 +13,12 @@ import {
   HStack,
   Heading,
   Image,
+  Modal,
+  ModalBody,
+  ModalCloseButton,
+  ModalContent,
+  ModalHeader,
+  ModalOverlay,
   NumberDecrementStepper,
   NumberIncrementStepper,
   NumberInput,
@@ -27,7 +33,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { ICreateBookingForm, IReview, IRoomDetail, Value } from '../type';
-import { FaStar } from 'react-icons/fa';
+import { FaChevronRight, FaStar } from 'react-icons/fa';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../calendar.css';
@@ -35,6 +41,8 @@ import { Helmet } from 'react-helmet';
 import { useForm } from 'react-hook-form';
 import { BookingConfirmModal } from '../components/BookingConfirmModal';
 import { formatDate } from '../lib/utils';
+import useIsOverflow from '../lib/useIsOverflow';
+import RoomReviews from '../components/RoomReviews';
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -42,18 +50,20 @@ export default function RoomDetail() {
     ['rooms', roomPk],
     getRoom
   );
-  const { isLoading: isReviewsLoading, data: reviews } = useQuery<IReview[]>(
-    ['rooms', roomPk, 'reviews'],
-    getReviews
-  );
+
   const [dates, setDates] = useState<Value>(new Date());
+  const { register, watch } = useForm<ICreateBookingForm>();
   const {
-    register,
-    handleSubmit,
-    watch,
-    formState: { errors },
-  } = useForm<ICreateBookingForm>();
-  const { isOpen, onOpen, onClose } = useDisclosure();
+    isOpen: isBookingOpen,
+    onOpen: onBookingOpen,
+    onClose: onBookingClose,
+  } = useDisclosure();
+  const {
+    isOpen: isDscOpen,
+    onOpen: onDscOpen,
+    onClose: onDscClose,
+  } = useDisclosure();
+  const [ref, isOverflow] = useIsOverflow();
   const { data: checkBookingData, isLoading: isCheckingBooking } = useQuery(
     ['check', roomPk, dates],
     checkBooking,
@@ -62,7 +72,6 @@ export default function RoomDetail() {
       enabled: dates !== undefined,
     }
   );
-
   return (
     <Box mt={10} px={{ base: '10', lg: '48' }}>
       <Helmet>
@@ -134,49 +143,43 @@ export default function RoomDetail() {
             />
           </HStack>
           <Divider />
-          <Box mt={10}>
-            <Heading fontSize={'2xl'} mb={0}>
-              <Skeleton isLoaded={!isReviewsLoading}>
-                <HStack>
-                  <FaStar /> <Text>{room?.rating}</Text>
-                  <Text>∙</Text>
-                  <Text>
-                    {reviews?.length} review{reviews?.length === 1 ? '' : 's'}
-                  </Text>
-                </HStack>
-              </Skeleton>
-            </Heading>
-            <Container mt={10} maxW="container.lg" marginX="none">
-              <Grid gap={10} templateColumns={'1fr 1fr'}>
-                {reviews?.map((review, index) => (
-                  <VStack alignItems={'flex-start'} key={index}>
-                    <HStack>
-                      <Avatar
-                        name={review.user.name}
-                        src={review.user.avatar}
-                        size="md"
-                      />
-                      <VStack spacing={0} alignItems={'flex-start'}>
-                        <Skeleton isLoaded={!isReviewsLoading}>
-                          <Heading fontSize={'md'}>{review.user.name}</Heading>
-                        </Skeleton>
+          <Text
+            ref={ref}
+            position={'relative'}
+            whiteSpace={'break-spaces'}
+            h="72"
+            overflow={'clip'}
+            backgroundColor={'rgba(224, 224, 224, 0.2)'}
+            rounded={'xl'}
+            p="8"
+            my="8"
+          >
+            {room?.description}
+            {isOverflow ? (
+              <Button
+                onClick={onDscOpen}
+                position={'absolute'}
+                bottom={4}
+                right={4}
+                colorScheme={'blackAlpha'}
+              >
+                <FaChevronRight />더 보기
+              </Button>
+            ) : null}
+          </Text>
+          <Modal size={'xl'} isOpen={isDscOpen} onClose={onDscClose}>
+            <ModalOverlay />
+            <ModalContent>
+              <ModalHeader>Modal Title</ModalHeader>
+              <ModalCloseButton />
 
-                        <Skeleton isLoaded={!isReviewsLoading}>
-                          <HStack spacing={1}>
-                            <FaStar size="12px" />
-                            <Text>{review.rating}</Text>
-                          </HStack>
-                        </Skeleton>
-                      </VStack>
-                    </HStack>
-                    <Skeleton isLoaded={!isReviewsLoading}>
-                      <Text>{review.payload}</Text>
-                    </Skeleton>
-                  </VStack>
-                ))}
-              </Grid>
-            </Container>
-          </Box>
+              <ModalBody overflow={'scroll'} whiteSpace={'break-spaces'}>
+                {room?.description}
+              </ModalBody>
+            </ModalContent>
+          </Modal>
+          <Divider mb={10} />
+          <RoomReviews rating={room?.rating ?? 0} />
         </Box>
         <Box mt={5}>
           <Calendar
@@ -195,7 +198,7 @@ export default function RoomDetail() {
             py="4"
             rounded={'xl'}
             shadow={'xl'}
-            backgroundColor={'rgba(224, 224, 224, 0.1)'}
+            backgroundColor={'rgba(224, 224, 224, 0.2)'}
           >
             <HStack w="100%" h={'14'}>
               <Stat w="50%" h="100%" ml="4">
@@ -233,7 +236,7 @@ export default function RoomDetail() {
             </Stat>
           </VStack>
           <Button
-            onClick={onOpen}
+            onClick={onBookingOpen}
             isDisabled={!checkBookingData?.ok}
             isLoading={isCheckingBooking}
             mt={5}
@@ -253,9 +256,9 @@ export default function RoomDetail() {
           check_in: checkBookingData?.check_in ?? formatDate(new Date()),
           check_out: checkBookingData?.check_out ?? formatDate(new Date()),
         }}
-        isModalOpen={isOpen}
-        onModalOpen={onOpen}
-        onModalClose={onClose}
+        isModalOpen={isBookingOpen}
+        onModalOpen={onBookingOpen}
+        onModalClose={onBookingClose}
         room={room!}
       />
     </Box>
