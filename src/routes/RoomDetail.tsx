@@ -43,6 +43,7 @@ import { BookingConfirmModal } from '../components/BookingConfirmModal';
 import { formatDate } from '../lib/utils';
 import useIsOverflow from '../lib/useIsOverflow';
 import RoomReviews from '../components/RoomReviews';
+import AmenitySVG from '../components/AmenitySVG';
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -71,6 +72,10 @@ export default function RoomDetail() {
       cacheTime: 0,
       enabled: dates !== undefined,
     }
+  );
+  const { isLoading: isReviewsLoading, data: reviews } = useQuery<IReview[]>(
+    ['rooms', roomPk, 'reviews'],
+    getReviews
   );
   return (
     <Box mt={10} px={{ base: '10', lg: '48' }}>
@@ -152,7 +157,7 @@ export default function RoomDetail() {
             backgroundColor={'rgba(224, 224, 224, 0.2)'}
             rounded={'xl'}
             p="8"
-            my="8"
+            my="10"
           >
             {room?.description}
             {isOverflow ? (
@@ -170,7 +175,7 @@ export default function RoomDetail() {
           <Modal size={'xl'} isOpen={isDscOpen} onClose={onDscClose}>
             <ModalOverlay />
             <ModalContent>
-              <ModalHeader>Modal Title</ModalHeader>
+              <ModalHeader>숙소 안내</ModalHeader>
               <ModalCloseButton />
 
               <ModalBody overflow={'scroll'} whiteSpace={'break-spaces'}>
@@ -178,7 +183,24 @@ export default function RoomDetail() {
               </ModalBody>
             </ModalContent>
           </Modal>
-          <Divider mb={10} />
+
+          <Divider />
+          <Heading fontSize={'3xl'} my={'10'}>
+            숙소 편의시설
+          </Heading>
+          <Grid templateColumns={'1fr 1fr'}>
+            {room?.amenities.map((amenity, idx) => {
+              return (
+                <HStack key={idx} mb={'4'} alignItems={'center'}>
+                  <AmenitySVG path={amenity.icon_image} />
+                  <Text fontSize={'xl'} textAlign={'center'}>
+                    {amenity.name}
+                  </Text>
+                </HStack>
+              );
+            })}
+          </Grid>
+          <Divider my={10} />
           <RoomReviews rating={room?.rating ?? 0} />
         </Box>
         <Box mt={5}>
@@ -199,7 +221,27 @@ export default function RoomDetail() {
             rounded={'xl'}
             shadow={'xl'}
             backgroundColor={'rgba(224, 224, 224, 0.2)'}
+            gap={'0'}
           >
+            <HStack justifyContent={'space-between'} w="100%" py="4">
+              <HStack>
+                <Heading fontSize={'2xl'} ml="4">
+                  ₩ {room?.price.toLocaleString()}
+                </Heading>
+                <Text>/ 박</Text>
+              </HStack>
+              <HStack pr="4">
+                <FaStar />{' '}
+                <Text as="b" fontSize={'lg'}>
+                  {room?.rating?.toFixed(1)}
+                </Text>
+                <Text>∙</Text>
+                <Text>
+                  {reviews?.length} review{reviews?.length === 1 ? '' : 's'}
+                </Text>
+              </HStack>
+            </HStack>
+            <Divider />
             <HStack w="100%" h={'14'}>
               <Stat w="50%" h="100%" ml="4">
                 <StatLabel>체크인</StatLabel>
@@ -211,7 +253,7 @@ export default function RoomDetail() {
                   {checkBookingData?.check_in}
                 </StatNumber>
               </Stat>
-              <Divider orientation="vertical" />
+              <Divider orientation="vertical" h="100%" />
               <Stat w="50%" h="100%" ml="4">
                 <StatLabel>체크아웃</StatLabel>
                 <StatNumber

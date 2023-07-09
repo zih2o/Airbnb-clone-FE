@@ -26,7 +26,7 @@ export interface IAmenity {
   name: string;
   description: string;
   kind: string;
-  image_icon: string;
+  icon_image: string;
 }
 
 export interface ICategory {

@@ -9,12 +9,7 @@ import { Helmet } from 'react-helmet';
 
 export default function Home() {
   const { isLoading, data: rooms } = useQuery<IRoomList[]>(['rooms'], getRooms);
-  const svgString =
-    "<svg xmlns='http://www.w3.org/2000/svg' width='100' height='100'><circle cx='50' cy='50' r='40' /></svg>";
 
-  const parser = new DOMParser();
-  const svgDoc = parser.parseFromString(svgString, 'image/svg+xml');
-  const svgElement = svgDoc.documentElement;
   return (
     <Grid
       mt={10}
