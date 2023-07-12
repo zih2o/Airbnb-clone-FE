@@ -82,8 +82,9 @@ export interface IReview {
   user: IRoomOwner;
 }
 export interface IReviewsPage {
-  result: {reviews:IReview[], totalReview: number};
+  reviews:IReview[],
   totalPage: number;
+  totalReview: number,
   nextPage:number
 }
 

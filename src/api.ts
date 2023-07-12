@@ -58,8 +58,8 @@ export const getReviews = async ({
   const response = await instance.get(
     `rooms/${roomPk}/reviews?page=${pageParam}&perPage=6`
   );
-  const { result, totalPage } = response.data;
-  return { nextPage: pageParam + 1, result, totalPage };
+  const { reviews, totalPage, totalReview } = response.data;
+  return { nextPage: pageParam + 1, reviews, totalPage, totalReview};
 };
 
 export const getMe = () =>

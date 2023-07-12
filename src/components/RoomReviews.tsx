@@ -10,7 +10,6 @@ import {
   ModalBody,
   ModalCloseButton,
   ModalContent,
-  ModalHeader,
   ModalOverlay,
   Skeleton,
   Spinner,
@@ -39,6 +38,7 @@ export default function RoomReviews({ rating }: IRoomReview) {
   const [reviewRef, isReviewOverflow] = useIsOverflow();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const {ref, inView} = useInView()
+  const totalReview = data?.pages ? data.pages[0].totalPage : 0;
   useEffect(()=>{
     if (inView){
       fetchNextPage()
@@ -52,14 +52,14 @@ export default function RoomReviews({ rating }: IRoomReview) {
             <FaStar /> <Text>{rating?.toFixed(1)}</Text>
             <Text>∙</Text>
             <Text>
-              {data?.pages[0]?.result?.totalReview} review{data?.pages[0]?.result?.totalReview === 1 ? '' : 's'}
+              {totalReview} review{totalReview === 1 ? '' : 's'}
             </Text>
           </HStack>
         </Skeleton>
       </Heading>
       <Container mt={10} maxW="container.lg" marginX="none">
         <Grid gap={10} templateColumns={'1fr 1fr'}>
-          {data?.pages.map((page, idx)=>page.result.reviews.map((review, idx) => (
+          {data?.pages.map((page, idx)=>page.reviews.map((review, idx) => (
             <VStack alignItems={'flex-start'} key={idx} position={'relative'}>
               <HStack>
                 <Avatar
@@ -102,7 +102,7 @@ export default function RoomReviews({ rating }: IRoomReview) {
         </Grid>
       </Container>
       <Button float={'right'} onClick={onOpen}>
-        <FaChevronRight /> 후기 {data?.pages[0]?.result?.totalReview}개 모두 보기
+        <FaChevronRight /> 후기 {totalReview}개 모두 보기
       </Button>
       <Modal size={'xl'} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -115,14 +115,14 @@ export default function RoomReviews({ rating }: IRoomReview) {
                   <FaStar /> <Text>{rating?.toFixed(1)}</Text>
                   <Text>∙</Text>
                   <Text>
-                    {data?.pages[0]?.result?.totalReview} review{data?.pages[0]?.result?.totalReview === 1 ? '' : 's'}
+                    {totalReview} review{totalReview === 1 ? '' : 's'}
                   </Text>
                 </HStack>
               </Skeleton>
             </Heading>
             <Container mt={10} maxW="container.lg" marginX="none">
               <VStack>
-                {data?.pages.map(page=>page.result.reviews.map((review, index) => (
+                {data?.pages.map(page=>page.reviews.map((review, index) => (
                   <VStack
                     alignItems={'flex-start'}
                     key={index}

@@ -243,8 +243,8 @@ export default function RoomDetail() {
                 </Text>
                 <Text>∙</Text>
                 <Text>
-                  {reviewData?.result?.totalReview} review
-                  {reviewData?.result?.totalReview === 1 ? '' : 's'}
+                  {reviewData?.totalReview} review
+                  {reviewData?.totalReview === 1 ? '' : 's'}
                 </Text>
               </HStack>
             </HStack>
