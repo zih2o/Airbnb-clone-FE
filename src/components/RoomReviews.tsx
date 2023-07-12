@@ -13,28 +13,37 @@ import {
   ModalHeader,
   ModalOverlay,
   Skeleton,
+  Spinner,
   Text,
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { useQuery } from '@tanstack/react-query';
-import React from 'react';
+import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
+import React, { useEffect } from 'react';
 import { FaChevronRight, FaStar } from 'react-icons/fa';
-import { IReview, IRoomDetail } from '../type';
+import { IReview, IReviewsPage, IRoomDetail } from '../type';
 import { getReviews } from '../api';
 import useIsOverflow from '../lib/useIsOverflow';
 import { useParams } from 'react-router-dom';
+import { useInView } from 'react-intersection-observer';
 interface IRoomReview {
   rating: number;
 }
 export default function RoomReviews({ rating }: IRoomReview) {
   const { roomPk } = useParams();
-  const { isLoading: isReviewsLoading, data: reviews } = useQuery<IReview[]>(
+  const { isLoading: isReviewsLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery<IReviewsPage>(
     ['rooms', roomPk, 'reviews'],
-    getReviews
+    getReviews, 
+    {getNextPageParam:(lastPage) => (lastPage?.nextPage <= lastPage.totalPage ? lastPage?.nextPage : undefined)},
   );
   const [reviewRef, isReviewOverflow] = useIsOverflow();
   const { isOpen, onOpen, onClose } = useDisclosure();
+  const {ref, inView} = useInView()
+  useEffect(()=>{
+    if (inView){
+      fetchNextPage()
+    }
+  }, [inView])
   return (
     <Box>
       <Heading fontSize={'2xl'} mb={0}>
@@ -43,15 +52,15 @@ export default function RoomReviews({ rating }: IRoomReview) {
             <FaStar /> <Text>{rating?.toFixed(1)}</Text>
             <Text>∙</Text>
             <Text>
-              {reviews?.length} review{reviews?.length === 1 ? '' : 's'}
+              {data?.pages[0]?.result?.totalReview} review{data?.pages[0]?.result?.totalReview === 1 ? '' : 's'}
             </Text>
           </HStack>
         </Skeleton>
       </Heading>
       <Container mt={10} maxW="container.lg" marginX="none">
         <Grid gap={10} templateColumns={'1fr 1fr'}>
-          {reviews?.map((review, index) => (
-            <VStack alignItems={'flex-start'} key={index} position={'relative'}>
+          {data?.pages.map((page, idx)=>page.result.reviews.map((review, idx) => (
+            <VStack alignItems={'flex-start'} key={idx} position={'relative'}>
               <HStack>
                 <Avatar
                   name={review.user.name}
@@ -89,11 +98,11 @@ export default function RoomReviews({ rating }: IRoomReview) {
                 </Button>
               ) : null}
             </VStack>
-          ))}
+          )))}
         </Grid>
       </Container>
       <Button float={'right'} onClick={onOpen}>
-        <FaChevronRight /> 후기 {reviews?.length}개 모두 보기
+        <FaChevronRight /> 후기 {data?.pages[0]?.result?.totalReview}개 모두 보기
       </Button>
       <Modal size={'xl'} isOpen={isOpen} onClose={onClose}>
         <ModalOverlay />
@@ -106,14 +115,14 @@ export default function RoomReviews({ rating }: IRoomReview) {
                   <FaStar /> <Text>{rating?.toFixed(1)}</Text>
                   <Text>∙</Text>
                   <Text>
-                    {reviews?.length} review{reviews?.length === 1 ? '' : 's'}
+                    {data?.pages[0]?.result?.totalReview} review{data?.pages[0]?.result?.totalReview === 1 ? '' : 's'}
                   </Text>
                 </HStack>
               </Skeleton>
             </Heading>
             <Container mt={10} maxW="container.lg" marginX="none">
               <VStack>
-                {reviews?.map((review, index) => (
+                {data?.pages.map(page=>page.result.reviews.map((review, index) => (
                   <VStack
                     alignItems={'flex-start'}
                     key={index}
@@ -141,7 +150,8 @@ export default function RoomReviews({ rating }: IRoomReview) {
                       <Text h="12">{review.payload}</Text>
                     </Skeleton>
                   </VStack>
-                ))}
+                )))}
+                {(hasNextPage || isReviewsLoading) && <Spinner ref={ref}/>}
               </VStack>
             </Container>
           </ModalBody>

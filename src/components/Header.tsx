@@ -89,7 +89,12 @@ export default function Header() {
       }}
       px={20}
       py={5}
+      w="100%"
       borderBottomWidth={1}
+      position={'sticky'}
+      top={'0'}
+      zIndex={'1000'}
+      backgroundColor={'Background'}
     >
       <Box as={'a'} href={'/'} color={logoColor} fontSize={'4xl'}>
         <FaAirbnb />

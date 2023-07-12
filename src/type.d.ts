@@ -81,6 +81,11 @@ export interface IReview {
   rating: number;
   user: IRoomOwner;
 }
+export interface IReviewsPage {
+  result: {reviews:IReview[], totalReview: number};
+  totalPage: number;
+  nextPage:number
+}
 
 export interface IUser {
   last_login: string;

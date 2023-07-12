@@ -32,7 +32,13 @@ import {
   VStack,
   useDisclosure,
 } from '@chakra-ui/react';
-import { ICreateBookingForm, IReview, IRoomDetail, Value } from '../type';
+import {
+  ICreateBookingForm,
+  IReview,
+  IReviewsPage,
+  IRoomDetail,
+  Value,
+} from '../type';
 import { FaChevronRight, FaStar } from 'react-icons/fa';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
@@ -73,7 +79,7 @@ export default function RoomDetail() {
       enabled: dates !== undefined,
     }
   );
-  const { isLoading: isReviewsLoading, data: reviews } = useQuery<IReview[]>(
+  const { isLoading: isReviewsLoading, data: reviewData } = useQuery<IReviewsPage>(
     ['rooms', roomPk, 'reviews'],
     getReviews
   );
@@ -203,7 +209,7 @@ export default function RoomDetail() {
           <Divider my={10} />
           <RoomReviews rating={room?.rating ?? 0} />
         </Box>
-        <Box mt={5}>
+        <Box mt={5} position={'sticky'}>
           <Calendar
             onChange={setDates}
             value={dates}
@@ -237,7 +243,8 @@ export default function RoomDetail() {
                 </Text>
                 <Text>∙</Text>
                 <Text>
-                  {reviews?.length} review{reviews?.length === 1 ? '' : 's'}
+                  {reviewData?.result?.totalReview} review
+                  {reviewData?.result?.totalReview === 1 ? '' : 's'}
                 </Text>
               </HStack>
             </HStack>

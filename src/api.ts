@@ -50,11 +50,16 @@ export const editRoom = (data: IEditRoomVariables) => {
     .then((response) => response.data);
 };
 
-export const getReviews = ({ queryKey }: QueryFunctionContext) => {
+export const getReviews = async ({
+  queryKey,
+  pageParam = 1,
+}: QueryFunctionContext) => {
   const [_, roomPk] = queryKey;
-  return instance
-    .get(`rooms/${roomPk}/reviews`)
-    .then((response) => response.data);
+  const response = await instance.get(
+    `rooms/${roomPk}/reviews?page=${pageParam}&perPage=6`
+  );
+  const { result, totalPage } = response.data;
+  return { nextPage: pageParam + 1, result, totalPage };
 };
 
 export const getMe = () =>
