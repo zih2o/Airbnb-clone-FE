@@ -59,7 +59,7 @@ export default function RoomReviews({ rating }: IRoomReview) {
       </Heading>
       <Container mt={10} maxW="container.lg" marginX="none">
         <Grid gap={10} templateColumns={'1fr 1fr'}>
-          {data?.pages.map((page, idx)=>page.reviews.map((review, idx) => (
+          {data?.pages?.map((page, idx)=>page.reviews?.map((review, idx) => (
             <VStack alignItems={'flex-start'} key={idx} position={'relative'}>
               <HStack>
                 <Avatar
@@ -109,7 +109,7 @@ export default function RoomReviews({ rating }: IRoomReview) {
         <ModalContent h="36rem">
           <ModalCloseButton />
           <ModalBody mt={0} overflow={'scroll'}>
-            <Heading fontSize={'2xl'} py={4} mb={12}>
+            <Heading fontSize={'2xl'} position={"sticky"}>
               <Skeleton isLoaded={!isReviewsLoading}>
                 <HStack>
                   <FaStar /> <Text>{rating?.toFixed(1)}</Text>
@@ -121,9 +121,10 @@ export default function RoomReviews({ rating }: IRoomReview) {
               </Skeleton>
             </Heading>
             <Container mt={10} maxW="container.lg" marginX="none">
-              <VStack>
-                {data?.pages.map(page=>page.reviews.map((review, index) => (
+              <VStack w="100%">
+                {data?.pages?.map(page=>page.reviews?.map((review, index) => (
                   <VStack
+                    w="100%"
                     alignItems={'flex-start'}
                     key={index}
                     position={'relative'}
@@ -147,7 +148,7 @@ export default function RoomReviews({ rating }: IRoomReview) {
                       </VStack>
                     </HStack>
                     <Skeleton isLoaded={!isReviewsLoading}>
-                      <Text h="12">{review.payload}</Text>
+                      <Text h="auto">{review.payload}</Text>
                     </Skeleton>
                   </VStack>
                 )))}

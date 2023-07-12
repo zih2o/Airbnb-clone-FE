@@ -30,6 +30,7 @@ import {
   StatNumber,
   Text,
   VStack,
+  Wrap,
   useDisclosure,
 } from '@chakra-ui/react';
 import {
@@ -84,7 +85,7 @@ export default function RoomDetail() {
     getReviews
   );
   return (
-    <Box mt={10} px={{ base: '10', lg: '48' }}>
+    <Box w="auto"h="auto" mt={10} px={{ base: '10', lg: '48' }} zIndex={"1"} >
       <Helmet>
         <title>{room ? room.name : 'Loading...'}</title>
       </Helmet>
@@ -126,7 +127,7 @@ export default function RoomDetail() {
           </GridItem>
         ))}
       </Grid>
-      <Grid templateColumns={'2fr 1fr'} gap={10}>
+      <Grid templateColumns={'2fr 1fr'} gap={10} >
         <Box>
           <HStack justifyContent={'space-between'} my={10}>
             <VStack alignItems={'flex-start'}>
@@ -195,7 +196,7 @@ export default function RoomDetail() {
             숙소 편의시설
           </Heading>
           <Grid templateColumns={'1fr 1fr'}>
-            {room?.amenities.map((amenity, idx) => {
+            {room?.amenities?.map((amenity, idx) => {
               return (
                 <HStack key={idx} mb={'4'} alignItems={'center'}>
                   <AmenitySVG path={amenity.icon_image} />
@@ -209,7 +210,7 @@ export default function RoomDetail() {
           <Divider my={10} />
           <RoomReviews rating={room?.rating ?? 0} />
         </Box>
-        <Box mt={5} position={'sticky'}>
+        <Box w="auto" h="70vh" mt={5} position={"sticky"} top={"24"}>
           <Calendar
             onChange={setDates}
             value={dates}
@@ -224,6 +225,7 @@ export default function RoomDetail() {
           <VStack
             mt="4"
             py="4"
+            
             rounded={'xl'}
             shadow={'xl'}
             backgroundColor={'rgba(224, 224, 224, 0.2)'}
