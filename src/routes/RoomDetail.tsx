@@ -80,10 +80,6 @@ export default function RoomDetail() {
       enabled: dates !== undefined,
     }
   );
-  const { isLoading: isReviewsLoading, data: reviewData } = useQuery<IReviewsPage>(
-    ['rooms', roomPk, 'reviews'],
-    getReviews
-  );
   return (
     <Box w="auto"h="auto" mt={10} px={{ base: '10', lg: '48' }} zIndex={"1"} >
       <Helmet>
@@ -241,12 +237,7 @@ export default function RoomDetail() {
               <HStack pr="4">
                 <FaStar />{' '}
                 <Text as="b" fontSize={'lg'}>
-                  {room?.rating?.toFixed(1)}
-                </Text>
-                <Text>∙</Text>
-                <Text>
-                  {reviewData?.totalReview} review
-                  {reviewData?.totalReview === 1 ? '' : 's'}
+                  {room?.rating ?? 0}
                 </Text>
               </HStack>
             </HStack>

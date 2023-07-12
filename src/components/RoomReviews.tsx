@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  Center,
   Container,
   Grid,
   HStack,
@@ -25,31 +26,36 @@ import { getReviews } from '../api';
 import useIsOverflow from '../lib/useIsOverflow';
 import { useParams } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
+import RoomDetailReview from './RoomDetailReview';
 interface IRoomReview {
   rating: number;
 }
 export default function RoomReviews({ rating }: IRoomReview) {
   const { roomPk } = useParams();
-  const { isLoading: isReviewsLoading, data, hasNextPage, fetchNextPage } = useInfiniteQuery<IReviewsPage>(
-    ['rooms', roomPk, 'reviews'],
-    getReviews, 
-    {getNextPageParam:(lastPage) => (lastPage?.nextPage <= lastPage.totalPage ? lastPage?.nextPage : undefined)},
-  );
+  const {
+    isLoading: isReviewsLoading,
+    data,
+    hasNextPage,
+    fetchNextPage,
+  } = useInfiniteQuery<IReviewsPage>(['rooms', roomPk, 'reviews'], getReviews, {
+    getNextPageParam: (lastPage) =>
+      lastPage?.nextPage <= lastPage.totalPage ? lastPage?.nextPage : undefined,
+  });
   const [reviewRef, isReviewOverflow] = useIsOverflow();
   const { isOpen, onOpen, onClose } = useDisclosure();
-  const {ref, inView} = useInView()
-  const totalReview = data?.pages ? data.pages[0].totalPage : 0;
-  useEffect(()=>{
-    if (inView){
-      fetchNextPage()
+  const { ref, inView } = useInView();
+  const totalReview = data?.pages ? data.pages[0].totalReview : 0;
+  useEffect(() => {
+    if (inView) {
+      fetchNextPage();
     }
-  }, [inView])
+  }, [inView]);
   return (
     <Box>
       <Heading fontSize={'2xl'} mb={0}>
         <Skeleton isLoaded={!isReviewsLoading}>
           <HStack>
-            <FaStar /> <Text>{rating?.toFixed(1)}</Text>
+            <FaStar /> <Text>{rating ?? 0}</Text>
             <Text>∙</Text>
             <Text>
               {totalReview} review{totalReview === 1 ? '' : 's'}
@@ -58,47 +64,17 @@ export default function RoomReviews({ rating }: IRoomReview) {
         </Skeleton>
       </Heading>
       <Container mt={10} maxW="container.lg" marginX="none">
-        <Grid gap={10} templateColumns={'1fr 1fr'}>
-          {data?.pages?.map((page, idx)=>page.reviews?.map((review, idx) => (
-            <VStack alignItems={'flex-start'} key={idx} position={'relative'}>
-              <HStack>
-                <Avatar
-                  name={review.user.name}
-                  src={review.user.avatar}
-                  size="md"
+        <Grid templateColumns={'1fr 1fr'} gap={'4'} mb={'4'}>
+          {data?.pages
+            ? data.pages[0].reviews?.map((review, idx) => (
+                <RoomDetailReview
+                  idx={idx}
+                  review={review}
+                  isReviewsLoading={isReviewsLoading}
+                  onOpen={onOpen}
                 />
-                <VStack spacing={0} alignItems={'flex-start'}>
-                  <Skeleton isLoaded={!isReviewsLoading}>
-                    <Heading fontSize={'md'}>{review.user.name}</Heading>
-                  </Skeleton>
-
-                  <Skeleton isLoaded={!isReviewsLoading}>
-                    <HStack spacing={1}>
-                      <FaStar size="12px" />
-                      <Text>{review.rating}</Text>
-                    </HStack>
-                  </Skeleton>
-                </VStack>
-              </HStack>
-              <Skeleton isLoaded={!isReviewsLoading}>
-                <Text h="12" overflow={'clip'} ref={reviewRef}>
-                  {review.payload}
-                </Text>
-              </Skeleton>
-              {isReviewOverflow ? (
-                <Button
-                  onClick={onOpen}
-                  position={'absolute'}
-                  bottom={'1'}
-                  right={'1'}
-                  size={'xs'}
-                  colorScheme="blackAlpha"
-                >
-                  더보기
-                </Button>
-              ) : null}
-            </VStack>
-          )))}
+              ))
+            : null}
         </Grid>
       </Container>
       <Button float={'right'} onClick={onOpen}>
@@ -109,10 +85,10 @@ export default function RoomReviews({ rating }: IRoomReview) {
         <ModalContent h="36rem">
           <ModalCloseButton />
           <ModalBody mt={0} overflow={'scroll'}>
-            <Heading fontSize={'2xl'} position={"sticky"}>
+            <Heading fontSize={'2xl'} position={'sticky'}>
               <Skeleton isLoaded={!isReviewsLoading}>
                 <HStack>
-                  <FaStar /> <Text>{rating?.toFixed(1)}</Text>
+                  <FaStar /> <Text>{rating ?? 0}</Text>
                   <Text>∙</Text>
                   <Text>
                     {totalReview} review{totalReview === 1 ? '' : 's'}
@@ -122,37 +98,43 @@ export default function RoomReviews({ rating }: IRoomReview) {
             </Heading>
             <Container mt={10} maxW="container.lg" marginX="none">
               <VStack w="100%">
-                {data?.pages?.map(page=>page.reviews?.map((review, index) => (
-                  <VStack
-                    w="100%"
-                    alignItems={'flex-start'}
-                    key={index}
-                    position={'relative'}
-                  >
-                    <HStack>
-                      <Avatar
-                        name={review.user.name}
-                        src={review.user.avatar}
-                        size="md"
-                      />
-                      <VStack spacing={0} alignItems={'flex-start'}>
+                {data?.pages?.map((page) =>
+                  page.reviews?.map((review, index) => {
+                    return (
+                      <VStack
+                        w="100%"
+                        alignItems={'flex-start'}
+                        key={index}
+                        position={'relative'}
+                      >
+                        <HStack>
+                          <Avatar
+                            name={review.user.name}
+                            src={review.user.avatar}
+                            size="md"
+                          />
+                          <VStack spacing={0} alignItems={'flex-start'}>
+                            <Skeleton isLoaded={!isReviewsLoading}>
+                              <Heading fontSize={'md'}>
+                                {review.user.name}
+                              </Heading>
+                            </Skeleton>
+                            <Skeleton isLoaded={!isReviewsLoading}>
+                              <HStack spacing={1}>
+                                <FaStar size="12px" />
+                                <Text>{review.rating}</Text>
+                              </HStack>
+                            </Skeleton>
+                          </VStack>
+                        </HStack>
                         <Skeleton isLoaded={!isReviewsLoading}>
-                          <Heading fontSize={'md'}>{review.user.name}</Heading>
-                        </Skeleton>
-                        <Skeleton isLoaded={!isReviewsLoading}>
-                          <HStack spacing={1}>
-                            <FaStar size="12px" />
-                            <Text>{review.rating}</Text>
-                          </HStack>
+                          <Text h="auto">{review.payload}</Text>
                         </Skeleton>
                       </VStack>
-                    </HStack>
-                    <Skeleton isLoaded={!isReviewsLoading}>
-                      <Text h="auto">{review.payload}</Text>
-                    </Skeleton>
-                  </VStack>
-                )))}
-                {(hasNextPage || isReviewsLoading) && <Spinner ref={ref}/>}
+                    );
+                  })
+                )}
+                {(hasNextPage || isReviewsLoading) && <Spinner ref={ref} />}
               </VStack>
             </Container>
           </ModalBody>
