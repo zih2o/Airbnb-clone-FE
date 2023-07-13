@@ -16,6 +16,8 @@ import {
   Spinner,
   Text,
   VStack,
+  useColorMode,
+  useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import { useInfiniteQuery, useQuery } from '@tanstack/react-query';
@@ -26,7 +28,7 @@ import { getReviews } from '../api';
 import useIsOverflow from '../lib/useIsOverflow';
 import { useParams } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
-import RoomDetailReview from './RoomDetailReview';
+import RoomReview from './RoomReview';
 interface IRoomReview {
   rating: number;
 }
@@ -67,7 +69,7 @@ export default function RoomReviews({ rating }: IRoomReview) {
         <Grid templateColumns={'1fr 1fr'} gap={'4'} mb={'4'}>
           {data?.pages
             ? data.pages[0].reviews?.map((review, idx) => (
-                <RoomDetailReview
+                <RoomReview
                   idx={idx}
                   review={review}
                   isReviewsLoading={isReviewsLoading}

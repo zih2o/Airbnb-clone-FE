@@ -7,6 +7,7 @@ import {
   Skeleton,
   Text,
   VStack,
+  useColorModeValue,
 } from '@chakra-ui/react';
 import { FaStar } from 'react-icons/fa';
 import { IReview } from '../type';
@@ -19,13 +20,14 @@ interface IRoomDetailReview {
   onOpen: () => void;
 }
 
-export default function RoomDetailReview({
+export default function RoomReview({
   idx,
   review,
   isReviewsLoading,
   onOpen,
 }: IRoomDetailReview) {
   const [reviewRef, isReviewOverflow] = useIsOverflow();
+  const gray = useColorModeValue('blackAlpha', 'gray');
 
   return (
     <VStack
@@ -57,19 +59,17 @@ export default function RoomDetailReview({
         </VStack>
       </HStack>
       <Skeleton isLoaded={!isReviewsLoading}>
-        <Text h="12" overflow={'clip'} ref={reviewRef} key={idx + 'd'}>
+        <Text noOfLines={2} overflow={'clip'} ref={reviewRef} key={idx + 'd'}>
           {review.payload}
         </Text>
       </Skeleton>
       {isReviewOverflow ? (
         <Button
           key={idx + 'e'}
+          alignSelf={'flex-end'}
           onClick={onOpen}
-          position={'absolute'}
-          bottom={'1'}
-          right={'1'}
           size={'xs'}
-          colorScheme="blackAlpha"
+          colorScheme={gray}
         >
           더보기
         </Button>

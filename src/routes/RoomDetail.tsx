@@ -42,6 +42,7 @@ import {
   Text,
   VStack,
   Wrap,
+  useColorModeValue,
   useDisclosure,
 } from '@chakra-ui/react';
 import {
@@ -98,6 +99,7 @@ export default function RoomDetail() {
     onOpen: onLikeOpen,
   } = useDisclosure();
   const [ref, isOverflow] = useIsOverflow();
+  const gray = useColorModeValue('blackAlpha', 'gray');
   const queryClient = useQueryClient();
   const { data: checkBookingData, isLoading: isCheckingBooking } = useQuery(
     ['check', roomPk, dates],
@@ -231,30 +233,29 @@ export default function RoomDetail() {
             />
           </HStack>
           <Divider />
-          <Text
-            ref={ref}
-            position={'relative'}
-            whiteSpace={'break-spaces'}
-            h="72"
-            overflow={'clip'}
+          <Box
             backgroundColor={'rgba(224, 224, 224, 0.2)'}
             rounded={'xl'}
-            p="8"
+            mx="0"
             my="10"
+            px="8"
+            py="4"
           >
-            {room?.description}
+            <Text
+              ref={ref}
+              noOfLines={12}
+              whiteSpace={'break-spaces'}
+              overflow={'hidden'}
+            >
+              {room?.description}
+            </Text>
             {isOverflow ? (
-              <Button
-                onClick={onDscOpen}
-                position={'absolute'}
-                bottom={4}
-                right={4}
-                colorScheme={'blackAlpha'}
-              >
+              <Button onClick={onDscOpen} mt="2" colorScheme={gray}>
                 <FaChevronRight />더 보기
               </Button>
             ) : null}
-          </Text>
+          </Box>
+
           <Modal size={'xl'} isOpen={isDscOpen} onClose={onDscClose}>
             <ModalOverlay />
             <ModalContent>

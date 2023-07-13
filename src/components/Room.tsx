@@ -91,7 +91,7 @@ export default function Room({
         {photos[0] ? (
           <Image minH="300" src={photos[0].file} />
         ) : (
-          <Box minH="300" h="100%" w="100%" p={10} bg="green.400" />
+          <Box minH="300" h="100%" w="100%" p={10} bg="gray.400" />
         )}
         <Button
           onClick={is_owner ? onCameraClick : onLikeClick}
@@ -110,25 +110,27 @@ export default function Room({
           )}
         </Button>
       </Box>
-      <Box>
-        <Grid gap={2} templateColumns={'7fr 1fr'}>
+      <Box w="100%">
+        <HStack justifyContent={'space-between'} mr="2">
           <Text as={'b'} noOfLines={1}>
             {city}, {country}
           </Text>
           <HStack spacing={1}>
             <FaStar />
-            <Text>{rating}</Text>
+            <Text
+              fontSize={typeof rating === 'string' ? 'xs' : 'sm'}
+              color={typeof rating === 'string' ? 'gray.500' : '-moz-initial'}
+            >
+              {rating}
+            </Text>
           </HStack>
-        </Grid>
+        </HStack>
         <Text fontSize={'sm'} color={gray}>
           호스트: {owner.name} 님
         </Text>
-        <Text fontSize={'sm'} color={gray}>
-          11월 18일 ~ 11월 30일
-        </Text>
       </Box>
       <Text>
-        <Text as={'b'}>₩ {price}</Text> /박
+        <Text as={'b'}>₩ {price.toLocaleString()}</Text> /박
       </Text>
       <WishlistModal isOpen={isLikeOpen} onClose={onLikeClose} roomPk={pk} />
     </VStack>
