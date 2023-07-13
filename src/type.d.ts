@@ -159,3 +159,18 @@ export interface ICreateBookingVariables {
   roomPk: string;
   bookingData: ICreateBookingForm;
 }
+
+export interface IModal {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export interface IWishlist {
+  name: string;
+  rooms: IRoomList[];
+  user: number;
+}
+
+export interface ICreateWishlist {
+  name: string;
+}

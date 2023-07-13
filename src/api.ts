@@ -4,6 +4,7 @@ import Cookie from 'js-cookie';
 import {
   ICreateBookingVariables,
   ICreatePhotoVaribles,
+  ICreateWishlist,
   IEditRoomVariables,
   ILoginForm,
   ISignUpForm,
@@ -189,6 +190,20 @@ export const createBooking = (data: ICreateBookingVariables) => {
   const { roomPk, bookingData } = data;
   return instance
     .post(`rooms/${roomPk}/bookings`, bookingData, {
+      headers: {
+        'X-CSRFToken': Cookie.get('csrftoken') || '',
+      },
+    })
+    .then((response) => response.data);
+};
+
+export const getWishlists = () => {
+  return instance.get(`wishlists/`).then((response) => response.data);
+};
+
+export const createWishlist = (data: ICreateWishlist) => {
+  return instance
+    .post(`wishlists/`, data, {
       headers: {
         'X-CSRFToken': Cookie.get('csrftoken') || '',
       },

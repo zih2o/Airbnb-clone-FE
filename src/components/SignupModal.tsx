@@ -19,17 +19,12 @@ import {
 import { FaUser, FaLock, FaEnvelope, FaUserNinja } from 'react-icons/fa';
 import SocialLogin from './SocialLogin';
 import { useForm } from 'react-hook-form';
-import { ISignUpError, ISignUpForm } from '../type';
+import { IModal, ISignUpError, ISignUpForm } from '../type';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { signUp } from '../api';
 import { AxiosError } from 'axios';
 
-interface ISignupModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function SignupModal({ isOpen, onClose }: ISignupModalProps) {
+export default function SignupModal({ isOpen, onClose }: IModal) {
   const {
     register,
     handleSubmit,

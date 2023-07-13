@@ -18,16 +18,11 @@ import {
 import { FaUser, FaLock } from 'react-icons/fa';
 import SocialLogin from './SocialLogin';
 import { useForm } from 'react-hook-form';
-import { ILoginForm } from '../type';
+import { ILoginForm, IModal } from '../type';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { usernameLogIn } from '../api';
 
-interface ILoginModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-}
-
-export default function LoginModal({ isOpen, onClose }: ILoginModalProps) {
+export default function LoginModal({ isOpen, onClose }: IModal) {
   const {
     register,
     handleSubmit,

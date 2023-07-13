@@ -7,11 +7,13 @@ import {
   Text,
   VStack,
   useColorModeValue,
+  useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
 import { FaCamera, FaRegHeart, FaStar } from 'react-icons/fa';
 import { IRoomList } from '../type';
 import { useNavigate } from 'react-router-dom';
+import WishlistModal from './WishlistModal';
 
 export default function Room({
   pk,
@@ -25,6 +27,15 @@ export default function Room({
 }: IRoomList) {
   const gray = useColorModeValue('gray.600', 'gray.300');
   const navigate = useNavigate();
+  const {
+    isOpen: isLikeOpen,
+    onClose: onLikeClose,
+    onOpen: onLikeOpen,
+  } = useDisclosure();
+  const onLikeClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    onLikeOpen();
+  };
   const onCameraClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
     navigate(`rooms/${pk}/photos`);
@@ -44,7 +55,7 @@ export default function Room({
           <Box minH="300" h="100%" w="100%" p={10} bg="green.400" />
         )}
         <Button
-          onClick={onCameraClick}
+          onClick={is_owner ? onCameraClick : onLikeClick}
           variant={'unstyled'}
           position={'absolute'}
           top={2}
@@ -74,6 +85,7 @@ export default function Room({
       <Text>
         <Text as={'b'}>₩ {price}</Text> /박
       </Text>
+      <WishlistModal isOpen={isLikeOpen} onClose={onLikeClose} />
     </VStack>
   );
 }
