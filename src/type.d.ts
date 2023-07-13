@@ -13,6 +13,7 @@ export interface IRoomList {
   rating: number;
   is_owner: boolean;
   photos: IRoomPhoto[];
+  owner: IUser;
 }
 
 export interface IRoomPage {

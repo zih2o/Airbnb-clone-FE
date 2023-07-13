@@ -51,6 +51,7 @@ export default function Home() {
                 <Room
                   pk={room.pk}
                   name={room.name}
+                  owner={room.owner}
                   is_owner={room.is_owner}
                   photos={room.photos}
                   city={room.city}

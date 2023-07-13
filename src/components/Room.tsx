@@ -21,6 +21,7 @@ export default function Room({
   is_owner,
   rating,
   price,
+  owner,
 }: IRoomList) {
   const gray = useColorModeValue('gray.600', 'gray.300');
   const navigate = useNavigate();
@@ -64,7 +65,7 @@ export default function Room({
           </HStack>
         </Grid>
         <Text fontSize={'sm'} color={gray}>
-          호스트: @@@@ 님 ・ 호스트 경력 7년
+          호스트: {owner.name} 님
         </Text>
         <Text fontSize={'sm'} color={gray}>
           11월 18일 ~ 11월 30일
