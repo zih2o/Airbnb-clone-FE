@@ -1,7 +1,18 @@
-import { useMutation, useQuery } from '@tanstack/react-query';
+import {
+  InfiniteData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
-import { checkBooking, createBooking, getReviews, getRoom } from '../api';
+import { Link, useNavigate, useParams } from 'react-router-dom';
+import {
+  addToWishlist,
+  checkBooking,
+  createBooking,
+  getReviews,
+  getRoom,
+} from '../api';
 import {
   Avatar,
   Box,
@@ -34,13 +45,21 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import {
+  IAddToWishlist,
   ICreateBookingForm,
   IReview,
   IReviewsPage,
   IRoomDetail,
+  IRoomPage,
   Value,
 } from '../type';
-import { FaChevronRight, FaStar } from 'react-icons/fa';
+import {
+  FaCamera,
+  FaChevronRight,
+  FaHeart,
+  FaRegHeart,
+  FaStar,
+} from 'react-icons/fa';
 import Calendar from 'react-calendar';
 import 'react-calendar/dist/Calendar.css';
 import '../calendar.css';
@@ -51,6 +70,7 @@ import { formatDate } from '../lib/utils';
 import useIsOverflow from '../lib/useIsOverflow';
 import RoomReviews from '../components/RoomReviews';
 import AmenitySVG from '../components/AmenitySVG';
+import WishlistModal from '../components/WishlistModal';
 
 export default function RoomDetail() {
   const { roomPk } = useParams();
@@ -71,7 +91,14 @@ export default function RoomDetail() {
     onOpen: onDscOpen,
     onClose: onDscClose,
   } = useDisclosure();
+  const navigate = useNavigate();
+  const {
+    isOpen: isLikeOpen,
+    onClose: onLikeClose,
+    onOpen: onLikeOpen,
+  } = useDisclosure();
   const [ref, isOverflow] = useIsOverflow();
+  const queryClient = useQueryClient();
   const { data: checkBookingData, isLoading: isCheckingBooking } = useQuery(
     ['check', roomPk, dates],
     checkBooking,
@@ -80,19 +107,72 @@ export default function RoomDetail() {
       enabled: dates !== undefined,
     }
   );
+  const likeMutation = useMutation(addToWishlist, {
+    onMutate: async ({ roomPk, wishlistPk }: IAddToWishlist) => {
+      await queryClient.cancelQueries({ queryKey: ['rooms'] });
+      const previousData = queryClient.getQueryData(['rooms']);
+      queryClient.setQueryData<InfiniteData<IRoomPage>>(
+        ['rooms'],
+        (oldData) => ({
+          pageParams: oldData?.pageParams ?? [],
+          pages:
+            oldData?.pages.map((page) => ({
+              ...page,
+              rooms: page.rooms.map((room) => {
+                if (room.pk === roomPk) {
+                  return { ...room, is_liked: !room.is_liked };
+                }
+                return room;
+              }),
+            })) ?? [],
+        })
+      );
+      return { previousData };
+    },
+    onError: (err, _, context) => {
+      queryClient.setQueryData(['rooms'], context?.previousData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+    },
+  });
+  const onLikeClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    room?.is_liked
+      ? likeMutation.mutate({ roomPk: roomPk ?? '', wishlistPk: 'unlike' })
+      : onLikeOpen();
+  };
+  const onCameraClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    navigate(`rooms/${room?.pk}/photos`);
+  };
   return (
-    <Box w="auto"h="auto" mt={10} px={{ base: '10', lg: '48' }} zIndex={"1"} >
+    <Box w="auto" h="auto" mt={10} px={{ base: '10', lg: '48' }} zIndex={'1'}>
       <Helmet>
         <title>{room ? room.name : 'Loading...'}</title>
       </Helmet>
       <Skeleton h={10} w={'100%'} isLoaded={!isLoading}>
-        <HStack>
+        <HStack justifyContent={'space-between'}>
           <Heading fontSize={'3xl'}>{room?.name}</Heading>
-          {room?.is_owner ? (
-            <Link to={`edit`}>
-              <Button colorScheme={'red'}>Edit</Button>
-            </Link>
-          ) : null}
+          <HStack>
+            {room?.is_owner ? (
+              <Link to={`edit`}>
+                <Button colorScheme={'red'}>Edit</Button>
+              </Link>
+            ) : null}
+            <Button
+              onClick={room?.is_owner ? onCameraClick : onLikeClick}
+              variant={'unstyled'}
+            >
+              {room?.is_owner ? (
+                <FaCamera size={25} />
+              ) : room?.is_liked ? (
+                <FaHeart size={25} color="red" />
+              ) : (
+                <FaRegHeart size={25} />
+              )}
+            </Button>
+          </HStack>
         </HStack>
       </Skeleton>
       <Grid
@@ -123,7 +203,7 @@ export default function RoomDetail() {
           </GridItem>
         ))}
       </Grid>
-      <Grid templateColumns={'2fr 1fr'} gap={10} >
+      <Grid templateColumns={'2fr 1fr'} gap={10}>
         <Box>
           <HStack justifyContent={'space-between'} my={10}>
             <VStack alignItems={'flex-start'}>
@@ -206,7 +286,7 @@ export default function RoomDetail() {
           <Divider my={10} />
           <RoomReviews rating={room?.rating ?? 0} />
         </Box>
-        <Box w="auto" h="70vh" mt={5} position={"sticky"} top={"24"}>
+        <Box w="auto" h="70vh" mt={5} position={'sticky'} top={'24'}>
           <Calendar
             onChange={setDates}
             value={dates}
@@ -221,7 +301,6 @@ export default function RoomDetail() {
           <VStack
             mt="4"
             py="4"
-            
             rounded={'xl'}
             shadow={'xl'}
             backgroundColor={'rgba(224, 224, 224, 0.2)'}
@@ -303,6 +382,13 @@ export default function RoomDetail() {
         onModalClose={onBookingClose}
         room={room!}
       />
+      {roomPk ? (
+        <WishlistModal
+          isOpen={isLikeOpen}
+          onClose={onLikeClose}
+          roomPk={roomPk}
+        />
+      ) : null}
     </Box>
   );
 }

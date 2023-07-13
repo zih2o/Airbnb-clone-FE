@@ -2,6 +2,7 @@ import { QueryFunctionContext } from '@tanstack/react-query';
 import axios from 'axios';
 import Cookie from 'js-cookie';
 import {
+  IAddToWishlist,
   ICreateBookingVariables,
   ICreatePhotoVaribles,
   ICreateWishlist,
@@ -204,6 +205,16 @@ export const getWishlists = () => {
 export const createWishlist = (data: ICreateWishlist) => {
   return instance
     .post(`wishlists/`, data, {
+      headers: {
+        'X-CSRFToken': Cookie.get('csrftoken') || '',
+      },
+    })
+    .then((response) => response.data);
+};
+
+export const addToWishlist = ({ wishlistPk, roomPk }: IAddToWishlist) => {
+  return instance
+    .put(`wishlists/${wishlistPk}/rooms/${roomPk}`, null, {
       headers: {
         'X-CSRFToken': Cookie.get('csrftoken') || '',
       },

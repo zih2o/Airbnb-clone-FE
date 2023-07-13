@@ -10,10 +10,16 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import React from 'react';
-import { FaCamera, FaRegHeart, FaStar } from 'react-icons/fa';
-import { IRoomList } from '../type';
+import { FaCamera, FaHeart, FaRegHeart, FaStar } from 'react-icons/fa';
+import { IAddToWishlist, IRoomList, IRoomPage } from '../type';
 import { useNavigate } from 'react-router-dom';
 import WishlistModal from './WishlistModal';
+import {
+  InfiniteData,
+  useMutation,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { addToWishlist } from '../api';
 
 export default function Room({
   pk,
@@ -24,6 +30,7 @@ export default function Room({
   rating,
   price,
   owner,
+  is_liked,
 }: IRoomList) {
   const gray = useColorModeValue('gray.600', 'gray.300');
   const navigate = useNavigate();
@@ -32,9 +39,41 @@ export default function Room({
     onClose: onLikeClose,
     onOpen: onLikeOpen,
   } = useDisclosure();
+  const queryClient = useQueryClient();
+  const likeMutation = useMutation(addToWishlist, {
+    onMutate: async ({ roomPk, wishlistPk }: IAddToWishlist) => {
+      await queryClient.cancelQueries({ queryKey: ['rooms'] });
+      const previousData = queryClient.getQueryData(['rooms']);
+      queryClient.setQueryData<InfiniteData<IRoomPage>>(
+        ['rooms'],
+        (oldData) => ({
+          pageParams: oldData?.pageParams ?? [],
+          pages:
+            oldData?.pages.map((page) => ({
+              ...page,
+              rooms: page.rooms.map((room) => {
+                if (room.pk === roomPk) {
+                  return { ...room, is_liked: !room.is_liked };
+                }
+                return room;
+              }),
+            })) ?? [],
+        })
+      );
+      return { previousData };
+    },
+    onError: (err, _, context) => {
+      queryClient.setQueryData(['rooms'], context?.previousData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+    },
+  });
   const onLikeClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
-    onLikeOpen();
+    is_liked
+      ? likeMutation.mutate({ roomPk: pk, wishlistPk: 'unlike' })
+      : onLikeOpen();
   };
   const onCameraClick = (event: React.SyntheticEvent<HTMLButtonElement>) => {
     event.preventDefault();
@@ -62,7 +101,13 @@ export default function Room({
           right={1}
           color={'gray.100'}
         >
-          {is_owner ? <FaCamera size={25} /> : <FaRegHeart size={25} />}
+          {is_owner ? (
+            <FaCamera size={25} />
+          ) : is_liked ? (
+            <FaHeart size={25} color="red" />
+          ) : (
+            <FaRegHeart size={25} />
+          )}
         </Button>
       </Box>
       <Box>
@@ -85,7 +130,7 @@ export default function Room({
       <Text>
         <Text as={'b'}>₩ {price}</Text> /박
       </Text>
-      <WishlistModal isOpen={isLikeOpen} onClose={onLikeClose} />
+      <WishlistModal isOpen={isLikeOpen} onClose={onLikeClose} roomPk={pk} />
     </VStack>
   );
 }

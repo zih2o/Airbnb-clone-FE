@@ -58,6 +58,7 @@ export default function Home() {
                   country={room.country}
                   rating={room.rating}
                   price={room.price}
+                  is_liked={room.is_liked}
                   key={idx}
                 />
               </Link>

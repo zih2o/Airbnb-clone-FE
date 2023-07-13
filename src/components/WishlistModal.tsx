@@ -19,12 +19,28 @@ import {
   useToast,
 } from '@chakra-ui/react';
 import React from 'react';
-import { ICreateWishlist, IModal, IWishlist } from '../type';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { createWishlist, getWishlists } from '../api';
+import {
+  IAddToWishlist,
+  ICreateWishlist,
+  IModal,
+  IRoomPage,
+  IWishlist,
+  IWishlistModal,
+} from '../type';
+import {
+  InfiniteData,
+  useMutation,
+  useQuery,
+  useQueryClient,
+} from '@tanstack/react-query';
+import { addToWishlist, createWishlist, getWishlists } from '../api';
 import { useForm } from 'react-hook-form';
 
-export default function WishlistModal({ isOpen, onClose }: IModal) {
+export default function WishlistModal({
+  isOpen,
+  onClose,
+  roomPk,
+}: IWishlistModal) {
   const {
     isOpen: isCreationOpen,
     onOpen: onCreationOpen,
@@ -34,14 +50,13 @@ export default function WishlistModal({ isOpen, onClose }: IModal) {
     register,
     handleSubmit,
     formState: { errors },
-    watch,
   } = useForm<ICreateWishlist>();
   const toast = useToast();
   const queryClient = useQueryClient();
   const { data: wishlists, isLoading: isWishlistsLoading } = useQuery<
     IWishlist[]
   >(['wishlists'], getWishlists);
-  const mutation = useMutation(createWishlist, {
+  const wishlistMutation = useMutation(createWishlist, {
     onSuccess: () => {
       toast({
         title: 'Wishlist Upload',
@@ -53,9 +68,49 @@ export default function WishlistModal({ isOpen, onClose }: IModal) {
       onCreationClose();
     },
   });
-  console.log(watch('name'), errors);
+  const likeMutation = useMutation(addToWishlist, {
+    onSuccess: () => {
+      toast({
+        title: 'Add to Wishlist',
+        description: '위시리스트에 추가되었어요!',
+        status: 'success',
+        position: 'bottom-right',
+      });
+      onClose();
+    },
+    onMutate: async ({ roomPk, wishlistPk }: IAddToWishlist) => {
+      await queryClient.cancelQueries({ queryKey: ['rooms'] });
+      const previousData = queryClient.getQueryData(['rooms']);
+      queryClient.setQueryData<InfiniteData<IRoomPage>>(
+        ['rooms'],
+        (oldData) => ({
+          pageParams: oldData?.pageParams ?? [],
+          pages:
+            oldData?.pages.map((page) => ({
+              ...page,
+              rooms: page.rooms.map((room) => {
+                if (room.pk === roomPk) {
+                  return { ...room, is_liked: !room.is_liked };
+                }
+                return room;
+              }),
+            })) ?? [],
+        })
+      );
+      return { previousData };
+    },
+    onError: (err, _, context) => {
+      queryClient.setQueryData(['rooms'], context?.previousData);
+    },
+    onSettled: () => {
+      queryClient.invalidateQueries({ queryKey: ['rooms'] });
+    },
+  });
   const onSubmit = (data: ICreateWishlist) => {
-    mutation.mutate(data);
+    wishlistMutation.mutate(data);
+  };
+  const handleClick = (wishlistPk: string) => {
+    likeMutation.mutate({ wishlistPk, roomPk });
   };
   return (
     <>
@@ -77,8 +132,9 @@ export default function WishlistModal({ isOpen, onClose }: IModal) {
           <ModalBody my="4">
             <Grid templateColumns={'1fr 1fr'} gap={'8'}>
               {wishlists?.map((wishlist) => (
-                <Box>
+                <Box key={roomPk}>
                   <Button
+                    onClick={() => handleClick(wishlist?.pk)}
                     h={'48'}
                     w="100%"
                     backgroundColor={'gray.300'}

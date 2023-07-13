@@ -5,13 +5,14 @@ export interface IRoomPhoto {
 }
 
 export interface IRoomList {
-  pk: number;
+  pk: string;
   name: string;
   country: string;
   city: string;
   price: number;
   rating: number;
   is_owner: boolean;
+  is_liked: boolean;
   photos: IRoomPhoto[];
   owner: IUser;
 }
@@ -164,8 +165,12 @@ export interface IModal {
   isOpen: boolean;
   onClose: () => void;
 }
+export interface IWishlistModal extends IModal {
+  roomPk: string;
+}
 
 export interface IWishlist {
+  pk: string;
   name: string;
   rooms: IRoomList[];
   user: number;
@@ -173,4 +178,9 @@ export interface IWishlist {
 
 export interface ICreateWishlist {
   name: string;
+}
+
+export interface IAddToWishlist {
+  roomPk: string;
+  wishlistPk: string;
 }

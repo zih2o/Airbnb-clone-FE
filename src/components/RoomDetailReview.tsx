@@ -29,33 +29,41 @@ export default function RoomDetailReview({
 
   return (
     <VStack
+      key={idx}
       w={'100%'}
       alignItems={'flex-start'}
-      key={idx}
       position={'relative'}
       overflow={'hidden'}
     >
-      <HStack>
-        <Avatar name={review.user.name} src={review.user.avatar} size="md" />
-        <VStack spacing={0} alignItems={'flex-start'}>
+      <HStack key={idx + 'a'}>
+        <Avatar
+          key={idx + 'aa'}
+          name={review.user.name}
+          src={review.user.avatar}
+          size="md"
+        />
+        <VStack key={idx + 'b'} spacing={0} alignItems={'flex-start'}>
           <Skeleton isLoaded={!isReviewsLoading}>
-            <Heading fontSize={'md'}>{review.user.name}</Heading>
+            <Heading key={idx + 'bb'} fontSize={'md'}>
+              {review.user.name}
+            </Heading>
           </Skeleton>
           <Skeleton isLoaded={!isReviewsLoading}>
-            <HStack spacing={1}>
+            <HStack key={idx + 'c'} spacing={1}>
               <FaStar size="12px" />
-              <Text>{review.rating}</Text>
+              <Text key={idx + 'cc'}>{review.rating}</Text>
             </HStack>
           </Skeleton>
         </VStack>
       </HStack>
       <Skeleton isLoaded={!isReviewsLoading}>
-        <Text h="12" overflow={'clip'} ref={reviewRef}>
+        <Text h="12" overflow={'clip'} ref={reviewRef} key={idx + 'd'}>
           {review.payload}
         </Text>
       </Skeleton>
       {isReviewOverflow ? (
         <Button
+          key={idx + 'e'}
           onClick={onOpen}
           position={'absolute'}
           bottom={'1'}
