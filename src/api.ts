@@ -18,8 +18,11 @@ const instance = axios.create({
   withCredentials: true,
 });
 
-export const getRooms = () =>
-  instance.get('rooms/').then((response) => response.data);
+export const getRooms = async ({ pageParam = 1 }: QueryFunctionContext) => {
+  const response = await instance.get(`rooms?page=${pageParam}&perPage=8`);
+  const { rooms, totalPage } = response.data;
+  return { nextPage: pageParam + 1, rooms, totalPage };
+};
 
 export const getRoom = ({ queryKey }: QueryFunctionContext) => {
   const [_, roomPk] = queryKey;
@@ -59,7 +62,7 @@ export const getReviews = async ({
     `rooms/${roomPk}/reviews?page=${pageParam}&perPage=6`
   );
   const { reviews, totalPage, totalReview } = response.data;
-  return { nextPage: pageParam + 1, reviews, totalPage, totalReview};
+  return { nextPage: pageParam + 1, reviews, totalPage, totalReview };
 };
 
 export const getMe = () =>

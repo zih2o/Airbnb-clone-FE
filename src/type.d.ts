@@ -15,6 +15,12 @@ export interface IRoomList {
   photos: IRoomPhoto[];
 }
 
+export interface IRoomPage {
+  rooms: IRoomList[];
+  nextPage: number;
+  totalPage: number;
+}
+
 export interface IRoomOwner {
   name: string;
   avatar: string;
@@ -82,10 +88,10 @@ export interface IReview {
   user: IRoomOwner;
 }
 export interface IReviewsPage {
-  reviews:IReview[],
+  reviews: IReview[];
   totalPage: number;
-  totalReview: number,
-  nextPage:number
+  totalReview: number;
+  nextPage: number;
 }
 
 export interface IUser {
