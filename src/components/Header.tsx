@@ -60,7 +60,8 @@ export default function Header() {
       });
     },
     onSuccess: () => {
-      queryClient.refetchQueries(['me']);
+      queryClient.invalidateQueries(['me']);
+      queryClient.invalidateQueries(['rooms']);
       if (toastId.current) {
         toast.update(toastId.current, {
           title: 'Log out',

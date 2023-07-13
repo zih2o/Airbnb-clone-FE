@@ -14,6 +14,7 @@ export default function GithubConfirm() {
   const mutation = useMutation(githubLogIn, {
     onSuccess: () => {
       queryClient.refetchQueries(['me']);
+      queryClient.refetchQueries(['rooms']);
       navigate('/');
       toast({
         status: 'success',

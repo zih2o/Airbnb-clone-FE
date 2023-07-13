@@ -49,6 +49,7 @@ export default function LoginModal({ isOpen, onClose }: ILoginModalProps) {
       });
       onClose();
       queryClient.refetchQueries(['me']);
+      queryClient.refetchQueries(['rooms']);
       reset();
     },
   });

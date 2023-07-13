@@ -14,6 +14,7 @@ export default function KakaoConfirm() {
   const mutation = useMutation(kakaoLogIn, {
     onSuccess: () => {
       queryClient.refetchQueries(['me']);
+      queryClient.refetchQueries(['rooms']);
       navigate('/');
       toast({
         status: 'success',
