@@ -77,6 +77,14 @@
   <img width="700" alt="Screenshot 2023-07-13 at 7 29 38 PM" src="https://github.com/nomadcoders/airbnb-clone-frontend/assets/85221728/014bea66-b95d-40b5-ba9c-c18c448b2b9e">
   <img width="700" alt="Screenshot 2023-07-13 at 7 28 27 PM" src="https://github.com/nomadcoders/airbnb-clone-frontend/assets/85221728/86fb2a54-58e2-4ad7-b34a-c46732d0abdc">
 
+<h3>로그인</h3>
+<img width="700" alt="Screenshot 2023-07-13 at 7 29 26 PM" src="https://github.com/nomadcoders/airbnb-clone-frontend/assets/85221728/53c8b3c5-cf7e-4762-9aa0-cca68fad2d48">
+<h3>위시리스트 추가</h3>
+<img width="700" alt="Screenshot 2023-07-13 at 7 34 21 PM" src="https://github.com/nomadcoders/airbnb-clone-frontend/assets/85221728/e895a650-339e-44ea-b17e-fe4c07dab35c">
+<h3>상세화면</h3>
+<img width="700" alt="Screenshot 2023-07-13 at 7 37 51 PM" src="https://github.com/nomadcoders/airbnb-clone-frontend/assets/85221728/96484036-0bf1-4872-893e-29b77b7a68f7">
+<img width="700" alt="Screenshot 2023-07-13 at 7 38 04 PM" src="https://github.com/nomadcoders/airbnb-clone-frontend/assets/85221728/f55e5fd1-4651-442f-bdb2-3a0b211e7246">
+<img width="700" alt="Screenshot 2023-07-13 at 7 38 15 PM" src="https://github.com/nomadcoders/airbnb-clone-frontend/assets/85221728/45025960-1568-4cc9-abcc-6001e9f081b5">
 
   
 </div>
@@ -90,32 +98,3 @@
 
 - API 명세 https://www.notion.so/b607690ea13744f3bc04a890a50a49ba?p=1a8eaa08dcc142d18cecd0b1b7387680&pm=s
 
-## 4. 프로젝트 팀원 역할 분담
-
-| 이름   | 포지션  | 담당업무                                                     |
-| ------ | ------- | ------------------------------------------------------------ |
-| 박지수 | 팀장/FE | 뉴스, 코멘트, 카테고리 구현 및 환경설정/라우팅               |
-| 이예나 | FE      | 메인페이지, 카테고리, 마이페이지, 모달 구현                  |
-| 이지현 | FE      | 로그인, 모달, 유저 관련 기능 구현                            |
-| 지시안 | FE      | 어드민, 헤더/네비게이터/푸터 구현                            |
-| 서윤지 | BE      | 유저, JWT, 구독 기능, 이미지 업로드, 배포, 에러처리 미들웨어 |
-| 손형석 | BE      | 카테고리, 뉴스레터, 좋아요, 댓글 기능 구현                   |
-
-## 5. 실행 방법
-
-- BE
-  ```
-  1. docker 실행
-  2. yarn dev
-  ```
-- FE
-  ```
-  1. npm i
-  2. npm run dev
-  ```
-
-## 6. 버전
-
-- 0.0.0
-
-## 7. FAQ
