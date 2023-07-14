@@ -2,6 +2,7 @@ import {
   Avatar,
   Box,
   Button,
+  Divider,
   HStack,
   IconButton,
   LightMode,
@@ -113,9 +114,18 @@ export default function Header() {
               <Avatar name={user?.name} src={user?.avatar} />
             </MenuButton>
             <MenuList>
+              <Link to="/trips">
+                <MenuItem as="b">여행</MenuItem>
+              </Link>
+              <Link to="/wishlists">
+                <MenuItem as="b">위시리스트</MenuItem>
+              </Link>
+              <Divider />
               {user?.is_host ? (
                 <Link to="/rooms/upload">
-                  <MenuItem>Upload room</MenuItem>
+                  <MenuItem fontSize={'md'}>
+                    당신의 공간을 에어비앤비 하세요
+                  </MenuItem>
                 </Link>
               ) : null}
               <MenuItem onClick={onLogOut} textColor={'red.400'} as={'b'}>
