@@ -8,6 +8,8 @@ import KakaoConfirm from './routes/KakaoConfirm';
 import UploadRoom from './routes/UploadRoom';
 import UploadPhotos from './routes/UploadPhotos';
 import EditRoom from './routes/EditRoom';
+import Wishlists from './routes/Wishlists';
+import Trips from './routes/Trips';
 
 const router = createBrowserRouter([
   {
@@ -48,6 +50,8 @@ const router = createBrowserRouter([
           },
         ],
       },
+      { path: 'trips', element: <Trips /> },
+      { path: 'wishlists', element: <Wishlists /> },
     ],
   },
 ]);
