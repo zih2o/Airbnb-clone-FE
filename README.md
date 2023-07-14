@@ -26,6 +26,7 @@
 <p>react-query useInfiniteQuery를 이용한 Infinite scroll 구현</p>
 <p>Like 기능에 react-query을 이용한 optimistic update 구현</p>
 <p>React Query로 캐싱 처리, 최소한의 요청 처리, 성능 최적화</p>
+<p>React-hook-form을 이용한 상태관리와 validation</p>
 <p>React-Calendar를 이용한 예약 기능 구현</p>
 <p>Kakao/GitHub 로그인 구현</p>
 <p>Custom Hook를 이용한 상태 관리로 불필요한 리렌더링 방지, 중복 코드 최소화</p>
